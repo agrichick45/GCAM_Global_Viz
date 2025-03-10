@@ -1,0 +1,53 @@
+---
+title: "Global Land Use"
+author: "Mandy Liesch"
+date: "2025-03-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+
+LUFile<-read_csv("s84_land_cover_basin.csv")
+
+```
+
+
+```{r}
+
+new_Shock_LU<- LUFile  %>% 
+  separate(Variable, c("Land", "LandUse", "Status")) %>%
+  select(-c("Model", "Unit"))  %>%
+  filter(Land == "LandCover") %>%
+  filter(LandUse!= "Total") %>%
+  filter(Status != "Total"|is.na(Status)) %>%
+  mutate(Status = replace_na(Status, "")) %>%
+  unite(LandCover, Status, LandUse, sep="")
+
+
+wide_sum_cat_LU<- new_Shock_LU %>% 
+  select(-c("Land"))  %>%
+  pivot_longer(!c(scenario, region, riverBasin, LandCover), names_to=c("year"), values_to = "area") %>%
+  mutate(year = as.numeric(year)) %>% 
+  pivot_wider(names_from = scenario, values_from = c(area)) %>%
+  mutate(DifCornShock = CORN1BG - REF) %>%
+  mutate(DifSoyShock = SOY1BG - REF)
+
+futRefLand.plt<-ggplot(wide_sum_cat_LU %>% 
+                              filter(region=="WLD")) +
+  geom_line(mapping=aes(x=year, y=REF, color=LandCover), lwd=2) 
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+
+
+futRefLand.plt
+
+  
