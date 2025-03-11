@@ -1,0 +1,66 @@
+---
+title: "Visuals"
+author: "Mandy Liesch"
+date: "2025-03-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(tidyverse)
+library(terra)
+library(plotly)
+
+LUFile<-read_csv("s84_land_cover_basin.csv")
+
+GCAM_Basin_ID<-read_csv("GCAM_Basin_IDs.csv")
+
+GCAM_Boundaries<-terra::vect("reg_basin_boundaries_moirai_landcells_3p1_0p5arcmin.shp")
+```
+
+```{r}
+total_Land_Use<-LUFile  %>% 
+  separate(Variable, c("Land", "LandUse", "Status")) %>%
+  select(-c("Model", "Unit"))  %>%
+  filter(Land == "LandCover") %>%
+  filter(LandUse== "Total") %>%
+  filter(scenario=="REF") %>%
+  select(c("region", "riverBasin", "2010")) %>%
+  rename(Area = "2010")
+
+
+new_Shock_LU<- LUFile  %>% 
+  separate(Variable, c("Land", "LandUse", "Status")) %>%
+  select(-c("Model", "Unit"))  %>%
+  filter(Land == "LandCover") %>%
+  filter(LandUse!= "Total") %>%
+  filter(Status != "Total"|is.na(Status)) %>%
+  mutate(Status = replace_na(Status, "")) %>%
+  unite(LandCover, Status, LandUse, sep="")
+
+var1 <- c("2060_P")
+var2 <- c("2010_P")
+
+merged_data<-merge(new_Shock_LU, total_Land_Use, by=c("region", "riverBasin")) %>%
+     mutate_at(vars("2010":"2060") , funs(P = ./Area * 100)) %>%
+     mutate(PerDif= cur_data()[[var1]] - cur_data()[[var2]])
+
+geo_key_merge<-merge(GCAM_Basin_ID, merged_data, by.x="GLU_Name", by.y="riverBasin", all=TRUE)
+
+ManPast_Ref_Merge<- geo_key_merge %>%
+  filter(scenario == "REF") %>%
+  filter(LandCover == "ManagedPasture")
+
+GCAM_Map_Data<-merge(GCAM_Boundaries, ManPast_Ref_Merge, by.x=c("basin_nm", "reg_nm"), by.y=c("GCAM_Basin_Name", "region"), all.x=TRUE)
+
+ggplot(GCAM_Map_Data) +
+  geom_spatvector(aes(fill = PerDif), color = NA) +
+  scale_fill_viridis_d()
+
+
+
