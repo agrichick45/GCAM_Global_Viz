@@ -21,7 +21,7 @@ LUFile<-read_csv("s84_land_cover_basin.csv")
 
 new_Shock_LU<- LUFile  %>% 
   separate(Variable, c("Land", "LandUse", "Status")) %>%
-  select(-c("Model", "Unit"))  %>%
+  dplyr::select(-c("Model", "Unit"))  %>%
   filter(Land == "LandCover") %>%
   filter(LandUse!= "Total") %>%
   filter(Status != "Total"|is.na(Status)) %>%
@@ -30,7 +30,7 @@ new_Shock_LU<- LUFile  %>%
 
 
 wide_sum_cat_LU<- new_Shock_LU %>% 
-  select(-c("Land"))  %>%
+  dplyr::select(-c("Land"))  %>%
   pivot_longer(!c(scenario, region, riverBasin, LandCover), names_to=c("year"), values_to = "area") %>%
   mutate(year = as.numeric(year)) %>% 
   pivot_wider(names_from = scenario, values_from = c(area)) %>%
@@ -39,12 +39,24 @@ wide_sum_cat_LU<- new_Shock_LU %>%
 
 futRefLand.plt<-ggplot(wide_sum_cat_LU %>% 
                               filter(region=="WLD")) +
-  geom_line(mapping=aes(x=year, y=REF, color=LandCover), lwd=2) 
+  geom_line(mapping=aes(x=year, y=REF, color=LandCover), lwd=2) +
+  scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
   #ggtitle("Future Net Emissions") +
   #Add the theme elements
   #theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
-  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+  labs( x='Year', y='Area (Mha)', linetype="Shock Type") 
+
+futShocksLand.plt<-ggplot(wide_sum_cat_LU %>% 
+                              filter(region=="WLD")) +
+  geom_line(mapping=aes(x=year, y=DifCornShock, color=LandCover, linetype="Corn"), lwd=2) +
+  geom_line(mapping=aes(x=year, y=DifSoyShock, color=LandCover, linetype="Soy"),  lwd=2) +
+  scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Area (Mha)', linetype="Shock Type") 
 
 
 

@@ -11,6 +11,24 @@ knitr::opts_chunk$set(echo = TRUE)
 setwd("C:/Users/ALIESCH/OneDrive - Environmental Protection Agency (EPA)/Desktop/gcamsoilc")
 ```
 
+```{r}
+LUColors <- c("UrbanLand"="#C80813FF", "Tundra"="#71D0F5FF", 
+              "Rock/Ice/Desert"="#8A9197FF", "Cropland" = "#FED439FF",
+              "HarvCropLand"="#FED439FF", "OtherArableLand" = "#D2AF81FF", 
+              "Pasture"= "#FD8CC1FF", "UnmanagedPasture"="#370335FF", 
+              "Grassland" = "#46732EFF", "Forest" = "#075149FF", 
+              "Shrubland" = "#F05C3BFF", "otherNotArable"="#8A9197FF")
+
+# Vegetative Based Color Pallet
+vegCEmissions<-c("#46732EFF")
+
+ModelColors<- c("FAO"="#370335FF", "Houghton" = "#FED439FF", 
+                "GCAM" = "#FED439FF", "HWSD"="#1A9993FF", "SG17" = "#197EC0FF",
+                "SG20"="#F05C3BFF")
+
+
+
+```
 
 
 ```{r}
@@ -36,8 +54,8 @@ combined_shock_global_data <- bind_rows(data_list)
 
 new_Shock_Emiss<- combined_shock_global_data  %>% 
   separate(Variable, c("Emissions", "CO2", "LUC", "Source")) %>%
-  select(-c("series", "Emissions", "CO2", "LUC", "run", "Unit", "model_run_date", "script_run_date", "comments"))  %>%
-  select(Model:'X2060') %>%
+  dplyr::select(-c("series", "Emissions", "CO2", "LUC", "run", "Unit", "model_run_date", "script_run_date", "comments"))  %>%
+  dplyr::select(Model:'X2060') %>%
   rename("LandUse" = "landType") %>%
   filter(Source == "Total")
 
@@ -190,15 +208,16 @@ world_sum_cum_emiss<- wide_sum_cat_emiss %>%
   summarise(across(where(is.numeric), sum)) %>%
   group_by(Model) %>% 
   mutate(cumSumCorn=cumsum(DifCornShock)) %>%
-  mutate(cumSumSoy=cumsum(DifSoyShock))
+  mutate(cumSumSoy=cumsum(DifSoyShock)) %>%
+  mutate(cumSumRef=cumsum(REF))
   
 #Calculate the net emissions plots by series
 futNetEmissions.plt<-ggplot() +
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=DifSoyShock, color=Model, linetype = "Soy"), lwd=2) +
       #Add the custom color manual and labels
-      #scale_color_manual(values=c(ModelColors, name = "Emissions"), 
-                      #labels = c("FAO Glosis", "Houghton")) +
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
   #Add the title==
   #ggtitle("Future Net Emissions") +
   #Add the theme elements
@@ -206,12 +225,14 @@ futNetEmissions.plt<-ggplot() +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
   
+
+
 futCumNetEmissions.plt<-ggplot() +
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=cumSumCorn, color=Model, linetype = "Corn"), lwd=2) +
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=cumSumSoy, color=Model, linetype = "Soy"), lwd=2) +
       #Add the custom color manual and labels
-      #scale_color_manual(values=c(ModelColors, name = "Emissions"), 
-                      #labels = c("FAO Glosis", "Houghton")) +
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
   #Add the title==
   #ggtitle("Future Net Emissions") +
   #Add the theme elements
@@ -225,7 +246,7 @@ world_sum_cum_emiss<- wide_sum_cat_emiss %>%
   filter(region == "WLD") %>%
   filter(Category != "UnmanagedLand") %>%
   filter(year >2015) %>%
-  filter(Model == "FAO"|Model=="Houghton"|Model=="HWSD"|Model=="SG17") %>%
+  filter(Model == "FAO"|Model=="Houghton"|Model=="HWSD"|Model=="SG17"|Model=="SG20") %>%
   group_by(Model, year) %>% 
   summarise(across(where(is.numeric), sum))
   
@@ -233,7 +254,19 @@ futRefEmissions.plt<-ggplot() +
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
-                      labels = c("FAO Glosis", "Houghton")) +
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+futRefCumEmissions.plt<-ggplot() +
+  geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=cumSumRef, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
   #Add the title==
   #ggtitle("Future Net Emissions") +
   #Add the theme elements
@@ -250,9 +283,12 @@ world_LU_FAO_cum_emiss<- wide_sum_cat_emiss %>%
 
 #Calculate the net emissions plots by series
 futFAOLUNetEmissions.plt<-ggplot()+
-  geom_line(world_LU_FAO_cum_emiss, mapping=aes(x=year, y=DifCornShock, group=Category, color=Category), lwd=2) + 
-  ggtitle("FAO Global Land Use Emission Change from Corn Shocks") + 
-  labs(y="Difference from Baseline Mt")
+  geom_line(world_LU_FAO_cum_emiss, mapping=aes(x=year, y=REF, group=Category, color=Category), lwd=2) + 
+  #Add the custom color manual and labels
+      scale_color_manual(values=c(LUColors, name = "Land Use"), 
+                      labels = c("Forest", "Grassland", "Harvested Cropland", "Other Arable Land", "Pasture", "Shrubland", "Tundra", "Unmanaged Pasture", "Urban Land")) +
+  ggtitle("FAO Global Land Use Emissions in the Reference Scenario") + 
+  labs(y="Emissions (Mt)")
 ```
 
 ```{r}
@@ -263,14 +299,15 @@ world_reg_sum_cum_emiss<- wide_sum_cat_reg_emiss %>%
   summarise(across(where(is.numeric), sum)) %>%
   group_by(Model, Reg8) %>% 
   mutate(cumSumCorn=cumsum(DifCornShock)) %>%
-  mutate(cumSumSoy=cumsum(DifSoyShock))
+  mutate(cumSumSoy=cumsum(DifSoyShock)) %>%
+  mutate(cumSumRef=cumsum(REF))
 
 futRegNetEmissions.plt<-ggplot() +
   #geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
-  geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=DifSoyShock, color=Model, linetype = "Soy"), lwd=2) +
+  geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
-      #scale_color_manual(values=c(ModelColors, name = "Emissions"), 
-                      #labels = c("FAO Glosis", "Houghton")) +
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
   #Add the title==
   #ggtitle("Future Net Emissions") +
   #Add the theme elements
@@ -279,6 +316,38 @@ futRegNetEmissions.plt<-ggplot() +
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
 
 FW_futRegNet.plt<- futRegNetEmissions.plt + facet_wrap(~Reg8)
+
+
+futRegCumEmissions.plt<-ggplot() +
+  #geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
+  geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=cumSumRef, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_futRegCum.plt<- futRegCumEmissions.plt + facet_wrap(~Reg8)
+
+
+futRegShockCumEmissions.plt<-ggplot() +
+  geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=cumSumCorn, color=Model, linetype = "Corn"), lwd=2) +
+  geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=cumSumSoy, color=Model, linetype = "Soy"), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_futRegShockCum.plt<- futRegShockCumEmissions.plt + facet_wrap(~Reg8)
   
 ```
 
@@ -290,14 +359,16 @@ world_NoUSA_sum_cum_emiss<- wide_sum_cat_NonUS_emiss %>%
   summarise(across(where(is.numeric), sum)) %>%
   group_by(Model, US_RW) %>% 
   mutate(cumSumCorn=cumsum(DifCornShock)) %>%
-  mutate(cumSumSoy=cumsum(DifSoyShock)) 
+  mutate(cumSumSoy=cumsum(DifSoyShock)) %>%
+  mutate(cumRef=cumsum(REF))
 
 futNonUSANetEmissions.plt<-ggplot() +
-  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
-  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifSoyShock, color=Model, linetype = "Soy"), lwd=2) +
+  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+  #geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
+  #geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifSoyShock, color=Model, linetype = "Soy"), lwd=2) +
       #Add the custom color manual and labels
-      #scale_color_manual(values=c(ModelColors, name = "Emissions"), 
-                      #labels = c("FAO Glosis", "Houghton")) +
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
   #Add the title==
   #ggtitle("Future Net Emissions") +
   #Add the theme elements
@@ -307,13 +378,42 @@ futNonUSANetEmissions.plt<-ggplot() +
 
 FW_fut_NonUS_Net.plt<- futNonUSANetEmissions.plt + facet_wrap(~US_RW)
 
+futNonUSACumSumRefEmissions.plt<-ggplot() +
+  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=cumRef, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_fut_NonUS_CumSum_Ref.plt<- futNonUSACumSumRefEmissions.plt + facet_wrap(~US_RW)
+
+
+futNonUSANetSumEmissions.plt<-ggplot() +
+  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
+  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifSoyShock, color=Model, linetype = "Soy"), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_fut_NonUS_NetSum.plt<- futNonUSANetSumEmissions.plt + facet_wrap(~US_RW)
 
 futNonUSACumSumEmissions.plt<-ggplot() +
   geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=cumSumCorn, color=Model, linetype = "Corn"), lwd=2) +
   geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=cumSumSoy, color=Model, linetype = "Soy"), lwd=2) +
       #Add the custom color manual and labels
-      #scale_color_manual(values=c(ModelColors, name = "Emissions"), 
-                      #labels = c("FAO Glosis", "Houghton")) +
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
   #Add the title==
   #ggtitle("Future Net Emissions") +
   #Add the theme elements

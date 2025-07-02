@@ -11,19 +11,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-```{r}
+```{r, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(terra)
+library(tidyterra)
 library(plotly)
+library(sf)
+library(ggdendro)
+library(dendextend)
+
+options(scipen=999)
+options(digits=2)
 
 LUFile<-read_csv("s84_land_cover_basin.csv")
 
 GCAM_Basin_ID<-read_csv("GCAM_Basin_IDs.csv")
 
-GCAM_Boundaries<-terra::vect("reg_basin_boundaries_moirai_landcells_3p1_0p5arcmin.shp")
+GCAM_Boundaries<-st_read("reg_basin_boundaries_moirai_landcells_3p1_0p5arcmin.shp")
+
+GCAM_Boundaries[is.na(GCAM_Boundaries)] <- "Danube"
+
+Basin_Codes<-read_csv("basinCodes.csv")
+
+categories<-read_csv("categories.csv")
+
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
 total_Land_Use<-LUFile  %>% 
   separate(Variable, c("Land", "LandUse", "Status")) %>%
   select(-c("Model", "Unit"))  %>%
@@ -52,15 +66,217 @@ merged_data<-merge(new_Shock_LU, total_Land_Use, by=c("region", "riverBasin")) %
 
 geo_key_merge<-merge(GCAM_Basin_ID, merged_data, by.x="GLU_Name", by.y="riverBasin", all=TRUE)
 
-ManPast_Ref_Merge<- geo_key_merge %>%
+```
+
+Total Changes 
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+Tot_Change <- geo_key_merge %>%
+     filter(PerDif > -1) %>%
+      group_by(GCAM_Basin_Name, Basin_ID, region, scenario) %>%
+     summarize(sum_positive = sum(PerDif))
+
+Tot_Change_Ref<-Tot_Change %>%
+  filter(scenario == "REF") 
+
+GCAM_Map_Data<-merge(GCAM_Boundaries, Tot_Change_Ref, by.x=c("basin_nm", "reg_nm"), by.y=c("GCAM_Basin_Name", "region"), all.x=TRUE)
+
+totChange<-ggplot(GCAM_Map_Data) +
+  geom_spatvector(aes(fill = sum_positive, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c(name="Land Use Changes") 
+
+ggplotly(totChange)
+
+#Remove the corn and soy shock data and all individual years except the percent difference
+
+GCAM_Map_Data_Full<-merge(GCAM_Boundaries, geo_key_merge, by.x=c("basin_nm", "reg_nm"), by.y=c("GCAM_Basin_Name", "region"), all.x=TRUE)
+
+RefScenario<- GCAM_Map_Data_Full %>%
   filter(scenario == "REF") %>%
-  filter(LandCover == "ManagedPasture")
+  as.data.frame %>%
+  select(c("basin_nm", "reg_nm", "key", "LandCover", "PerDif")) %>%
+  pivot_wider(id_cols = c("basin_nm", "reg_nm", "key"), names_from = LandCover, values_from = PerDif) %>%
+  mutate_at(c('UnmanagedForest','UnmanagedPasture', "ManagedForest", "ManagedPasture", "OtherArable", "OtherNotArable", "Grassland", "Cropland", "Shrubland"), ~replace_na(.,0)) %>%
+  mutate(totForest= UnmanagedForest + ManagedForest) %>%
+   mutate(totArable=OtherArable + Cropland) %>%
+  mutate_at(c('key'), factor)
 
-GCAM_Map_Data<-merge(GCAM_Boundaries, ManPast_Ref_Merge, by.x=c("basin_nm", "reg_nm"), by.y=c("GCAM_Basin_Name", "region"), all.x=TRUE)
 
-ggplot(GCAM_Map_Data) +
-  geom_spatvector(aes(fill = PerDif), color = NA) +
+LU_Map_File<-merge(GCAM_Boundaries, RefScenario, by=c("key", "reg_nm", "basin_nm"))
+
+ChangeArable<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = totArable, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c(name="Arable Cropland")
+  
+ggplotly(ChangeArable)
+
+ChangeForest<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = totForest, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c(name="Forest")
+
+ggplotly(ChangeForest)
+
+
+UnmanForest<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = UnmanagedForest, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c(name="Unmanaged Forest")
+
+ManForest<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = ManagedForest, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c()
+
+Shrubland<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = Shrubland, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c(name="Shrubland")
+
+ggplotly(Shrubland)
+
+Cropland<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = Cropland, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c()
+
+OtherArable <-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = OtherArable, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c()
+
+UnmanPast<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = UnmanagedPasture, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c("Unmanaged Pasture")
+
+ggplotly(UnmanPast)
+
+Pasture<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = ManagedPasture, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c("Managed Pasture")
+
+ggplotly(Pasture)
+
+Grassland<-ggplot(LU_Map_File) +
+  geom_spatvector(aes(fill = Grassland, text = paste("Basin Name:",basin_nm)), color = NA) +
+  scale_fill_viridis_c(name="Grassland")
+
+ggplotly(Grassland)
+
+ggarrange(Grassland, Shrubland, ChangeForest, UnmanPast)
+```
+
+## Prep the Dataset for Analysis 
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+#Remove the corn and soy shock data and all individual years except the percent difference
+
+GCAM_Map_Data_Full<-merge(GCAM_Boundaries, geo_key_merge, by.x=c("basin_nm", "reg_nm"), by.y=c("GCAM_Basin_Name", "region"), all.x=TRUE)
+
+RefScenario<- GCAM_Map_Data_Full %>%
+  filter(scenario == "REF") %>%
+  as.data.frame %>%
+  select(c("basin_nm", "reg_nm", "key", "LandCover", "PerDif")) %>%
+  pivot_wider(id_cols = c("basin_nm", "reg_nm", "key"), names_from = LandCover, values_from = PerDif) %>%
+  mutate_at(c('UnmanagedForest','UnmanagedPasture', "ManagedForest", "ManagedPasture", "OtherArable", "OtherNotArable", "Grassland", "Cropland", "Shrubland"), ~replace_na(.,0)) %>%
+   mutate(Forest= UnmanagedForest + ManagedForest) %>%
+  mutate(Crops=OtherArable + Cropland) %>%
+  select(-c('UnmanagedForest', "ManagedForest", "OtherArable", "Cropland")) %>%
+  mutate_at(c('key'), factor)
+
+
+LU_Map_File<-merge(GCAM_Boundaries, RefScenario, by=c("key", "reg_nm", "basin_nm"))
+
+totalNA<-RefScenario %>% summarise_all(~ sum(is.na(.)))
+
+cormat <- cor(RefScenario %>% keep(is.numeric))
+
+
+
+p.mat <- cor_pmat(RefScenario %>% keep(is.numeric))
+
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+
+corrplot(cormat, method="color", col=col(200),  
+         type="upper", order="hclust", 
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col="black", tl.srt=45, #Text label color and rotation
+         # Combine with significance
+         p.mat = p.mat,  
+         # hide correlation coefficient on the principal diagonal
+         diag=FALSE 
+         )
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+Basin_Codes$Notes<-NULL
+
+
+Cat_Merge<-merge(LU_Map_File, Basin_Codes, by="key", all=TRUE)
+
+Cat_Merge$VISGROUP<-as.factor(Cat_Merge$VISGROUP)
+
+LossesMap <-ggplot(Cat_Merge %>% filter(VISGROUP != 9)) +
+  geom_spatvector(aes(fill = VISGROUP, text = paste("Basin Name:",basin_nm)), color = NA) +
+   geom_sf(data = Cat_Merge, aes(fill = NA, text = paste("Basin Name:",basin_nm)),color = "grey50")+ 
   scale_fill_viridis_d()
 
+ggplotly(LossesMap)
+
+```
+
+```{r}
+
+New_Cat_Merge<-merge(LU_Map_File, categories, by="key", all=TRUE) 
+
+New_Cat_Merge$LUCategory<-as.factor(New_Cat_Merge$LUCategory)
+
+New_Cat_Merge<-New_Cat_Merge %>%
+    mutate(Group = recode(LUCategory, '1' = 'No Change', '2' = 'One Gain/One Loss', '3' =  'One Gain/Two Loss', '4' = 'One Gain/Multiple Loss', '5'='Two Gains/One Loss', '6'='Two Gains/Two Plus Losses' ))
 
 
+New_Cat_Merge$labels <- paste(
+  "Basin:", New_Cat_Merge$basin_nm,"<br>",
+                              "Region:", New_Cat_Merge$reg_nm,"<br>",
+                              "Total Changes:", sprintf("%0.2f", as.numeric(New_Cat_Merge$...8)),"<br>",
+                              "Total Cropland:", sprintf("%0.2f", as.numeric(New_Cat_Merge$totArable)),"<br>",
+                              "Unmanaged Pasture:",sprintf("%0.2f", as.numeric(New_Cat_Merge$UnmanagedPasture)),"<br>",
+                              "Grassland:",sprintf("%0.2f", as.numeric(New_Cat_Merge$Grassland.x)),"<br>",
+                              "Total Forest:",sprintf("%0.2f", as.numeric(New_Cat_Merge$totForest)),"<br>",                   
+                              "Shrubland:",sprintf("%0.2f", as.numeric(New_Cat_Merge$Shrubland.x))
+)
+
+
+
+CompositeBasinFigure<-ggplot(New_Cat_Merge) +
+      geom_spatvector(data=New_Cat_Merge %>% filter(Category == "C"), aes(fill = Group, text = labels)) +
+    geom_spatvector(data=New_Cat_Merge %>% filter(Category == "B"), aes(fill = Group, text = labels), alpha=0.5)+
+      geom_spatvector(data=New_Cat_Merge %>% filter(Category == "A"), aes(fill = Group, text = labels), alpha=0.2)
+
+
+l<-ggplotly(CompositeBasinFigure) %>%
+  layout(list(hoverformat = '.2f'))
+
+htmlwidgets::saveWidget(l, "basintypes.html")
+
+
+ggplotly(l)
+```
+
+```{r}
+CategoryFigure1to1<-ggplot(New_Cat_Merge) +
+      geom_spatvector(data=New_Cat_Merge %>% filter(LUCategory == 2), aes(fill = BroadClass)) +
+      geom_spatvector(data=New_Cat_Merge, fill=NA)
+
+CategoryFigure2to1<-ggplot(New_Cat_Merge) +
+    geom_spatvector(data=New_Cat_Merge %>% filter(LUCategory == 5), aes(fill = BroadClass)) +
+      geom_spatvector(data=New_Cat_Merge, fill=NA)
+                    
+CategoryFigure1to2<-ggplot(New_Cat_Merge) +
+    geom_spatvector(data=New_Cat_Merge %>% filter(LUCategory == 3), aes(fill = BroadClass)) +
+      geom_spatvector(data=New_Cat_Merge, fill=NA)
+                    
+CategoryFigure2to2<-ggplot(New_Cat_Merge) +
+    geom_spatvector(data=New_Cat_Merge %>% filter(LUCategory == 6), aes(fill = BroadClass)) +
+      geom_spatvector(data=New_Cat_Merge, fill=NA)               
+
+CategoryFigure3to1<-ggplot(New_Cat_Merge) +
+    geom_spatvector(data=New_Cat_Merge %>% filter(LUCategory == 4), aes(fill = BroadClass)) +
+      geom_spatvector(data=New_Cat_Merge, fill=NA)  
