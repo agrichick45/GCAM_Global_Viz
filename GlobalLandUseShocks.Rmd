@@ -11,11 +11,69 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(plotly)
 
+PastLU<-read_csv("L125.LC_bm2_R_LT_Yh_GLU.csv")
 LUFile<-read_csv("s84_land_cover_basin.csv")
+GCAM_Basin_ID<-read_csv("GCAM_Basin_IDs.csv")
 
 ```
 
+```{r}
+#Merge Historic Data with GCAM Basin IDs
+Hist_LU<-merge(GCAM_Basin_ID, PastLU, by.x="GLU_code", by.y="GLU", ALL=TRUE)
+
+```
+
+```{r}
+#Reclassify land use types into broader categories
+Recat_Hist    <- Hist_LU %>% 
+  mutate(Reg8 = case_when(
+  #Cropland category  
+  region %in% 
+    #Africa
+    c("Africa_Eastern", "Africa_Southern", "Africa_Western", "Africa_Northern", "South Africa") 
+      ~ "AFR",
+    #Other Arable Land
+   region == "Brazil" ~"BRA",
+    #Pasture category
+    region=="China" ~ "CHN",
+    #Unamanged pasture category
+    region %in% c("EU-12", "EU-15") 
+              ~ "EUR",
+    #Shrubland category
+    region %in% c("Canada", "Europe_Eastern", "Europe_Non_EU", "European Free Trade Association", "Middle East", "Russia") ~ "ROW",
+    #Other categories
+    region=="USA" ~ "USA",
+    region=="WLD" ~ "World",
+    region %in% c("Australia_NZ", "Central Asia", "India", "Indonesia", "Japan", "Pakistan", "South Asia", "South Korea", "South Asia", "Southeast Asia",  "Taiwan" ) ~ "XAS", 
+   region %in% c("Argentina", "Central America and Caribbean", "Colombia", "Mexico", "South America_Northern", "South America_Southern") ~ "XLM",
+    #Default Return Statement
+    TRUE~NA_character_
+  )
+)
+```
+
+```{r}
+PastLU_Recode <- PastLU %>% 
+  mutate(Land_Type = recode(Land_Type, "UrbanLand" = "OtherNotArable", "Tundra"= "OtherNotArable", "RockIceDesert"="OtherNotArable", "HarvCropLand"="Cropland", "Pasture"="ManagedPasture", "Forest"="ManagedForest", "OtherArableLand" = "OtherArable"))
+
+Past_Table <- PastLU_Recode  %>% group_by(Land_Type, year) %>% 
+  summarise(Area = sum(value))  %>%
+  mutate(totArea = Area/10) %>%
+  dplyr::select(-c("Area"))
+
+PastRefLand.plt<-ggplot(Past_Table) +
+  geom_line(mapping=aes(x=year, y=totArea, color=Land_Type), lwd=2) +
+  scale_color_manual(values=c("#FED439FF", "green", "#46732EFF","#D2AF81FF", "#8A9197FF", "#FD8CC1FF",   "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland",  "Managed Forest", "Grassland", "Other Arable Land", "Other Not Arable", "Managed Pasture",  "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
+  ggtitle("Past Land Use") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Area (Mha)', linetype="Shock Type") 
+
+ggplotly(PastRefLand.plt)
+```
 
 ```{r}
 
@@ -41,25 +99,48 @@ futRefLand.plt<-ggplot(wide_sum_cat_LU %>%
                               filter(region=="WLD")) +
   geom_line(mapping=aes(x=year, y=REF, color=LandCover), lwd=2) +
   scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
-  #ggtitle("Future Net Emissions") +
+  ggtitle("Future Land Use") +
   #Add the theme elements
-  #theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
   labs( x='Year', y='Area (Mha)', linetype="Shock Type") 
+
+ggplotly(futRefLand.plt)
+```
+
+```{r}
 
 futShocksLand.plt<-ggplot(wide_sum_cat_LU %>% 
                               filter(region=="WLD")) +
   geom_line(mapping=aes(x=year, y=DifCornShock, color=LandCover, linetype="Corn"), lwd=2) +
   geom_line(mapping=aes(x=year, y=DifSoyShock, color=LandCover, linetype="Soy"),  lwd=2) +
   scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
-  #ggtitle("Future Net Emissions") +
+  ggtitle("Future Land Emission Shocks") +
   #Add the theme elements
   #theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
   labs( x='Year', y='Area (Mha)', linetype="Shock Type") 
 
 
+ggplotly(futShocksLand.plt)
 
-futRefLand.plt
+```
 
-  
+```{r}
+world_future<-wide_sum_cat_LU %>% 
+  filter(region=="WLD") %>%
+  filter(year>=2020) %>%
+  dplyr::select(c("LandCover", "year", "REF")) %>%
+  rename("Land_Type" = "LandCover", "totArea" = "REF" )
+
+Total_Time_Series<-rbind(Past_Table, world_future)
+
+totLandChange.plt<-ggplot(Total_Time_Series) +
+  geom_line(mapping=aes(x=year, y=totArea, color=Land_Type), lwd=2) +
+  scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
+  ggtitle("Global Land Use Change") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "bottom") +
+
+  #Add the labels
+  labs( x='Year', y='Area (Mha)') 
