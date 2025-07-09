@@ -12,47 +12,27 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(plotly)
+library(tidyterra)
 
 PastLU<-read_csv("L125.LC_bm2_R_LT_Yh_GLU.csv")
 LUFile<-read_csv("s84_land_cover_basin.csv")
-GCAM_Basin_ID<-read_csv("GCAM_Basin_IDs.csv")
+GCAM_Basin_ID<-read_csv("GCAM_Basin_Key.csv")
+
 
 ```
 
 ```{r}
 #Merge Historic Data with GCAM Basin IDs
-Hist_LU<-merge(GCAM_Basin_ID, PastLU, by.x="GLU_code", by.y="GLU", ALL=TRUE)
+Hist_LU<-merge(GCAM_Basin_ID, PastLU, by.x=c("GLU_code", "reg_id"), by.y=c("GLU", "GCAM_region_ID"), ALL=TRUE)
+
+#Merge BasinID file with Future GCAM Data
+Fut_LU<-merge(GCAM_Basin_ID, LUFile, by.x=c("GLU_Name", "reg_nm"), by.y=c("riverBasin", "region"), ALL=TRUE)
+
 
 ```
 
-```{r}
-#Reclassify land use types into broader categories
-Recat_Hist    <- Hist_LU %>% 
-  mutate(Reg8 = case_when(
-  #Cropland category  
-  region %in% 
-    #Africa
-    c("Africa_Eastern", "Africa_Southern", "Africa_Western", "Africa_Northern", "South Africa") 
-      ~ "AFR",
-    #Other Arable Land
-   region == "Brazil" ~"BRA",
-    #Pasture category
-    region=="China" ~ "CHN",
-    #Unamanged pasture category
-    region %in% c("EU-12", "EU-15") 
-              ~ "EUR",
-    #Shrubland category
-    region %in% c("Canada", "Europe_Eastern", "Europe_Non_EU", "European Free Trade Association", "Middle East", "Russia") ~ "ROW",
-    #Other categories
-    region=="USA" ~ "USA",
-    region=="WLD" ~ "World",
-    region %in% c("Australia_NZ", "Central Asia", "India", "Indonesia", "Japan", "Pakistan", "South Asia", "South Korea", "South Asia", "Southeast Asia",  "Taiwan" ) ~ "XAS", 
-   region %in% c("Argentina", "Central America and Caribbean", "Colombia", "Mexico", "South America_Northern", "South America_Southern") ~ "XLM",
-    #Default Return Statement
-    TRUE~NA_character_
-  )
-)
-```
+
+# Past Land Use
 
 ```{r}
 PastLU_Recode <- PastLU %>% 
@@ -65,7 +45,7 @@ Past_Table <- PastLU_Recode  %>% group_by(Land_Type, year) %>%
 
 PastRefLand.plt<-ggplot(Past_Table) +
   geom_line(mapping=aes(x=year, y=totArea, color=Land_Type), lwd=2) +
-  scale_color_manual(values=c("#FED439FF", "green", "#46732EFF","#D2AF81FF", "#8A9197FF", "#FD8CC1FF",   "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland",  "Managed Forest", "Grassland", "Other Arable Land", "Other Not Arable", "Managed Pasture",  "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
+  scale_color_manual(values=c("#FED439FF",  "#46732EFF", "green","#FD8CC1FF", "#D2AF81FF", "#8A9197FF",   "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland",  "Managed Forest", "Grassland", "Other Arable Land", "Other Not Arable", "Managed Pasture",  "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
   ggtitle("Past Land Use") +
   #Add the theme elements
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -74,6 +54,8 @@ PastRefLand.plt<-ggplot(Past_Table) +
 
 ggplotly(PastRefLand.plt)
 ```
+
+# Future Land Use
 
 ```{r}
 
@@ -108,6 +90,8 @@ futRefLand.plt<-ggplot(wide_sum_cat_LU %>%
 ggplotly(futRefLand.plt)
 ```
 
+# Future Land Shocks
+
 ```{r}
 
 futShocksLand.plt<-ggplot(wide_sum_cat_LU %>% 
@@ -125,6 +109,8 @@ futShocksLand.plt<-ggplot(wide_sum_cat_LU %>%
 ggplotly(futShocksLand.plt)
 
 ```
+
+# Total Global Land Use Change
 
 ```{r}
 world_future<-wide_sum_cat_LU %>% 
@@ -144,3 +130,10 @@ totLandChange.plt<-ggplot(Total_Time_Series) +
 
   #Add the labels
   labs( x='Year', y='Area (Mha)') 
+
+ggplotly(totLandChange.plt)
+```
+
+# Region of 8 Land Use Changes
+
+```{r}

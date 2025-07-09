@@ -1,0 +1,387 @@
+GLU_Name,reg_id,basin_id,key,basin_nm,reg_nm,GLU_code,Reg8
+ArkWhtRedR,1,224,1224,Arkansas_White_Red_Basin,USA,GLU224,USA
+California,1,217,1217,California_River_Basin,USA,GLU217,USA
+Caribbean,1,101,1101,Caribbean,USA,GLU101,USA
+FraserR,1,27,1027,Fraser,USA,GLU027,USA
+GreatBasin,1,222,1222,Great_Basin,USA,GLU222,USA
+GreatLakes,1,227,1227,Great_Lakes_Basin,USA,GLU227,USA
+Hawaii,1,234,1234,Hawaii,USA,GLU234,USA
+MexCstNW,1,96,1096,Mexico_Northwest_Coast,USA,GLU096,USA
+MissouriR,1,223,1223,Missouri_River_Basin,USA,GLU223,USA
+MissppRN,1,218,1218,Upper_Mississippi_Basin,USA,GLU218,USA
+MissppRS,1,219,1219,Lower_Mississippi_River_Basin,USA,GLU219,USA
+NelsonR,1,23,1023,Saskatchewan_Nelson,USA,GLU023,USA
+OhioR,1,228,1228,Ohio_River_Basin,USA,GLU228,USA
+PacArctic,1,7,1007,Pacific_and_Arctic_Coast,USA,GLU007,USA
+RioGrande,1,231,1231,Rio_Grande_River_Basin,USA,GLU231,USA
+TennR,1,230,1230,Tennessee_River_Basin,USA,GLU230,USA
+TexasCst,1,225,1225,Texas_Gulf_Coast_Basin,USA,GLU225,USA
+UsaColoRN,1,220,1220,Upper_Colorado_River_Basin,USA,GLU220,USA
+UsaColoRS,1,221,1221,Lower_Colorado_River_Basin,USA,GLU221,USA
+UsaCstE,1,233,1233,Mid_Atlantic_Basin,USA,GLU233,USA
+UsaCstNE,1,232,1232,New_England_Basin,USA,GLU232,USA
+UsaCstSE,1,226,1226,South_Atlantic_Gulf_Basin,USA,GLU226,USA
+UsaPacNW,1,229,1229,Pacific_Northwest_Basin,USA,GLU229,USA
+AfrCstE,2,171,2171,Africa_East_Central_Coast,Africa_Eastern,GLU171,AFR
+AfrCstNE,2,100,2100,Africa_Red_Sea_Gulf_of_Aden_Coast,Africa_Eastern,GLU100,AFR
+AfrIntN,2,144,2144,Africa_North_Interior,Africa_Eastern,GLU144,AFR
+CongoR,2,183,2183,Congo,Africa_Eastern,GLU183,AFR
+LChad,2,151,2151,Lake_Chad,Africa_Eastern,GLU151,AFR
+Madagascar,2,177,2177,Madagascar,Africa_Eastern,GLU177,AFR
+NileR,2,87,2087,Nile,Africa_Eastern,GLU087,AFR
+RiftValley,2,179,2179,Rift_Valley,Africa_Eastern,GLU179,AFR
+ShebJubR,2,170,2170,Shebelli_Juba,Africa_Eastern,GLU170,AFR
+AfrCstNE,3,100,3100,Africa_Red_Sea_Gulf_of_Aden_Coast,Africa_Northern,GLU100,AFR
+AfrCstNW,3,86,3086,Africa_North_West_Coast,Africa_Northern,GLU086,AFR
+AfrIntN,3,144,3144,Africa_North_Interior,Africa_Northern,GLU144,AFR
+DeadSea,3,95,3095,Dead_Sea,Africa_Northern,GLU095,AFR
+LChad,3,151,3151,Lake_Chad,Africa_Northern,GLU151,AFR
+MeditE,3,75,3075,Mediterranean_Sea_East_Coast,Africa_Northern,GLU075,AFR
+MeditS,3,80,3080,Mediterranean_South_Coast,Africa_Northern,GLU080,AFR
+NigerR,3,149,3149,Niger,Africa_Northern,GLU149,AFR
+NileR,3,87,3087,Nile,Africa_Northern,GLU087,AFR
+SinaiP,3,98,3098,Sinai_Peninsula,Africa_Northern,GLU098,AFR
+AfrCstE,4,171,4171,Africa_East_Central_Coast,Africa_Southern,GLU171,AFR
+AfrCstS,4,198,4198,South_Africa_South_Coast,Africa_Southern,GLU198,AFR
+AfrCstSE,4,190,4190,Africa_Indian_Ocean_Coast,Africa_Southern,GLU190,AFR
+AfrCstSW,4,196,4196,Namibia_Coast,Africa_Southern,GLU196,AFR
+AfrIntS,4,197,4197,Africa_South_Interior,Africa_Southern,GLU197,AFR
+AngolaCst,4,182,4182,Angola_Coast,Africa_Southern,GLU182,AFR
+CongoR,4,183,4183,Congo,Africa_Southern,GLU183,AFR
+GuineaGulf,4,162,4162,Gulf_of_Guinea,Africa_Southern,GLU162,AFR
+LimpopoR,4,199,4199,Limpopo,Africa_Southern,GLU199,AFR
+NileR,4,87,4087,Nile,Africa_Southern,GLU087,AFR
+OrangeR,4,194,4194,Orange,Africa_Southern,GLU194,AFR
+RiftValley,4,179,4179,Rift_Valley,Africa_Southern,GLU179,AFR
+ZambeziR,4,188,4188,Zambezi,Africa_Southern,GLU188,AFR
+AfrCstNW,5,86,5086,Africa_North_West_Coast,Africa_Western,GLU086,AFR
+AfrCstW,5,142,5142,Africa_West_Coast,Africa_Western,GLU142,AFR
+AfrIntN,5,144,5144,Africa_North_Interior,Africa_Western,GLU144,AFR
+CongoR,5,183,5183,Congo,Africa_Western,GLU183,AFR
+GuineaGulf,5,162,5162,Gulf_of_Guinea,Africa_Western,GLU162,AFR
+LChad,5,151,5151,Lake_Chad,Africa_Western,GLU151,AFR
+NigerR,5,149,5149,Niger,Africa_Western,GLU149,AFR
+NileR,5,87,5087,Nile,Africa_Western,GLU087,AFR
+SenegalR,5,152,5152,Senegal,Africa_Western,GLU152,AFR
+VoltaR,5,160,5160,Volta,Africa_Western,GLU160,AFR
+ZambeziR,5,188,5188,Zambezi,Africa_Western,GLU188,AFR
+AusCstE,6,189,6189,Australia_East_Coast,Australia_NZ,GLU189,XAS
+AusCstN,6,184,6184,Australia_North_Coast,Australia_NZ,GLU184,XAS
+AusCstS,6,202,6202,Australia_South_Coast,Australia_NZ,GLU202,XAS
+AusCstW,6,191,6191,Australia_West_Coast,Australia_NZ,GLU191,XAS
+AusInt,6,193,6193,Australia_Interior,Australia_NZ,GLU193,XAS
+MurrayDrlg,6,208,6208,Murray_Darling,Australia_NZ,GLU208,XAS
+NewZealand,6,201,6201,New_Zealand,Australia_NZ,GLU201,XAS
+Tasmania,6,211,6211,Tasmania,Australia_NZ,GLU211,XAS
+AmazonR,7,168,7168,Amazon,Brazil,GLU168,BRA
+BrzCstE,7,186,7186,East_Brazil_South_Atlantic_Coast,Brazil,GLU186,BRA
+BrzCstN,7,172,7172,North_Brazil_South_Atlantic_Coast,Brazil,GLU172,BRA
+BrzCstS,7,195,7195,Uruguay_Brazil_South_Atlantic_Coast,Brazil,GLU195,BRA
+OrinocoR,7,156,7156,Orinoco,Brazil,GLU156,BRA
+ParnaibaR,7,187,7187,Parnaiba,Brazil,GLU187,BRA
+RioLaPlata,7,206,7206,La_Plata,Brazil,GLU206,BRA
+SAmerCstNE,7,161,7161,Northeast_South_America_South_Atlantic_Coast,Brazil,GLU161,BRA
+SaoFrancR,7,192,7192,Sao_Francisco,Brazil,GLU192,BRA
+TocantinsR,7,174,7174,Tocantins,Brazil,GLU174,BRA
+CanAtl,8,19,8019,Atlantic_Ocean_Seaboard,Canada,GLU019,ROW
+ChurchillR,8,34,8034,Churchill,Canada,GLU034,ROW
+FraserR,8,27,8027,Fraser,Canada,GLU027,ROW
+GreatLakes,8,227,8227,Great_Lakes_Basin,Canada,GLU227,ROW
+HudsonBay,8,15,8015,Hudson_Bay_Coast,Canada,GLU015,ROW
+Mackenzie,8,10,8010,Mackenzie,Canada,GLU010,ROW
+MissouriR,8,223,8223,Missouri_River_Basin,Canada,GLU223,ROW
+NelsonR,8,23,8023,Saskatchewan_Nelson,Canada,GLU023,ROW
+NWTerr,8,2,8002,Northwest_Territories,Canada,GLU002,ROW
+PacArctic,8,7,8007,Pacific_and_Arctic_Coast,Canada,GLU007,ROW
+StLwrncR,8,40,8040,St_Lawrence,Canada,GLU040,ROW
+UsaCstNE,8,232,8232,New_England_Basin,Canada,GLU232,ROW
+UsaPacNW,8,229,8229,Pacific_Northwest_Basin,Canada,GLU229,ROW
+Caribbean,9,101,9101,Caribbean,Central America and Caribbean,GLU101,XLM
+CntAmer,9,135,9135,Southern_Central_America,Central America and Caribbean,GLU135,XLM
+ColEcuaCst,9,157,9157,Colombia_Ecuador_Pacific_Coast,Central America and Caribbean,GLU157,XLM
+GrijUsuR,9,133,9133,Grijalva_Usumacinta,Central America and Caribbean,GLU133,XLM
+SAmerCstN,9,143,9143,Caribbean_Coast,Central America and Caribbean,GLU143,XLM
+YucatanP,9,111,9111,Yucatan_Peninsula,Central America and Caribbean,GLU111,XLM
+AmuDaryaR,10,58,10058,Amu_Darya,Central Asia,GLU058,XAS
+AmurR,10,43,10043,Amur,Central Asia,GLU043,XAS
+BlackSeaN,10,47,10047,Black_Sea_North_Coast,Central Asia,GLU047,XAS
+BlackSeaS,10,70,10070,Black_Sea_South_Coast,Central Asia,GLU070,XAS
+CaspianE,10,52,10052,Caspian_Sea_East_Coast,Central Asia,GLU052,XAS
+CaspianNE,10,45,10045,Caspian_Sea_Coast,Central Asia,GLU045,XAS
+CaspianSW,10,72,10072,Caspian_Sea_South_West_Coast,Central Asia,GLU072,XAS
+Gobi,10,42,10042,Gobi_Interior,Central Asia,GLU042,XAS
+LBalkash,10,68,10068,Lake_Balkash,Central Asia,GLU068,XAS
+ObR,10,56,10056,Ob,Central Asia,GLU056,XAS
+SyrDaryaR,10,76,10076,Syr_Darya,Central Asia,GLU076,XAS
+Tarim,10,85,10085,Tarim_Interior,Central Asia,GLU085,XAS
+UralR,10,38,10038,Ural,Central Asia,GLU038,XAS
+VolgaR,10,18,10018,Volga,Central Asia,GLU018,XAS
+YeniseiR,10,48,10048,Yenisei,Central Asia,GLU048,XAS
+AmuDaryaR,11,58,11058,Amu_Darya,China,GLU058,CHN
+AmurR,11,43,11043,Amur,China,GLU043,CHN
+BoHai,11,66,11066,Bo_Hai_Korean_Bay_North_Coast,China,GLU066,CHN
+ChinaCst,11,78,11078,China_Coast,China,GLU078,CHN
+GangesR,11,110,11110,Ganges_Bramaputra,China,GLU110,CHN
+Gobi,11,42,11042,Gobi_Interior,China,GLU042,CHN
+Hainan,11,124,11124,Hainan,China,GLU124,CHN
+Hong,11,109,11109,Hong_(Red_River),China,GLU109,CHN
+HuangHeR,11,79,11079,Huang_He,China,GLU079,CHN
+IndusR,11,89,11089,Indus,China,GLU089,CHN
+IrrawaddyR,11,137,11137,Irrawaddy,China,GLU137,CHN
+LBalkash,11,68,11068,Lake_Balkash,China,GLU068,CHN
+Mekong,11,125,11125,Mekong,China,GLU125,CHN
+ObR,11,56,11056,Ob,China,GLU056,CHN
+RusCstSE,11,37,11037,Russia_South_East_Coast,China,GLU037,CHN
+Salween,11,127,11127,Salween,China,GLU127,CHN
+SChinaSea,11,112,11112,South_China_Sea_Coast,China,GLU112,CHN
+SyrDaryaR,11,76,11076,Syr_Darya,China,GLU076,CHN
+Tarim,11,85,11085,Tarim_Interior,China,GLU085,CHN
+Tibet,11,92,11092,Plateau_of_Tibet_Interior,China,GLU092,CHN
+XunJiang,11,108,11108,Xun_Jiang,China,GLU108,CHN
+Yangtze,11,106,11106,Yangtze,China,GLU106,CHN
+ZiyaHe,11,77,11077,Ziya_He_Interior,China,GLU077,CHN
+AdrBlkSea,12,55,12055,Adriatic_Sea_Greece_Black_Sea_Coast,EU-12,GLU055,EUR
+BalticSea,12,20,12020,Baltic_Sea_Coast,EU-12,GLU020,EUR
+DanubeR,12,54,12054,Danube,EU-12,GLU054,EUR
+DaugavaR,12,25,12025,Daugava,EU-12,GLU025,EUR
+DniesterR,12,49,12049,Dniester,EU-12,GLU049,EUR
+DnkGrmCst,12,21,12021,Denmark_Germany_Coast,EU-12,GLU021,EUR
+ElbeR,12,31,12031,Elbe,EU-12,GLU031,EUR
+MeditE,12,75,12075,Mediterranean_Sea_East_Coast,EU-12,GLU075,EUR
+NarvaR,12,22,12022,Narva,EU-12,GLU022,EUR
+NemanR,12,35,12035,Neman,EU-12,GLU035,EUR
+OderR,12,29,12029,Oder,EU-12,GLU029,EUR
+PolandCst,12,33,12033,Poland_Coast,EU-12,GLU033,EUR
+WislaR,12,30,12030,Wisla,EU-12,GLU030,EUR
+AdrBlkSea,13,55,13055,Adriatic_Sea_Greece_Black_Sea_Coast,EU-15,GLU055,EUR
+AfrCstNW,13,86,13086,Africa_North_West_Coast,EU-15,GLU086,EUR
+ArcticIsl,13,1,13001,Arctic_Ocean_Islands,EU-15,GLU001,EUR
+ArgCstS,13,215,13215,South_Argentina_South_Atlantic_Coast,EU-15,GLU215,EUR
+DanubeR,13,54,13054,Danube,EU-15,GLU054,EUR
+DnkGrmCst,13,21,13021,Denmark_Germany_Coast,EU-15,GLU021,EUR
+DouroR,13,74,13074,Douro,EU-15,GLU074,EUR
+EbroR,13,73,13073,Ebro,EU-15,GLU073,EUR
+ElbeR,13,31,13031,Elbe,EU-15,GLU031,EUR
+EmsWeserR,13,28,13028,Ems_Weser,EU-15,GLU028,EUR
+EngWales,13,26,13026,England_and_Wales,EU-15,GLU026,EUR
+Finland,13,13,13013,Finland,EU-15,GLU013,EUR
+FranceCstS,13,61,13061,France_South_Coast,EU-15,GLU061,EUR
+FranceCstW,13,41,13041,France_West_Coast,EU-15,GLU041,EUR
+Gironde,13,64,13064,Gironde,EU-15,GLU064,EUR
+GuadalqR,13,83,13083,Guadalquivir,EU-15,GLU083,EUR
+GuadianaR,13,81,13081,Guadiana,EU-15,GLU081,EUR
+IberiaCst,13,60,13060,Spain_Portugal_Atlantic_Coast,EU-15,GLU060,EUR
+Ireland,13,24,13024,Ireland,EU-15,GLU024,EUR
+ItalyCstE,13,50,13050,Italy_East_Coast,EU-15,GLU050,EUR
+ItalyCstW,13,59,13059,Italy_West_Coast,EU-15,GLU059,EUR
+LoireR,13,44,13044,Loire,EU-15,GLU044,EUR
+MeditIsl,13,63,13063,Mediterranean_Sea_Islands,EU-15,GLU063,EUR
+NevaR,13,17,13017,Neva,EU-15,GLU017,EUR
+OderR,13,29,13029,Oder,EU-15,GLU029,EUR
+PoR,13,57,13057,Po,EU-15,GLU057,EUR
+RhineR,13,32,13032,Rhine,EU-15,GLU032,EUR
+RhoneR,13,62,13062,Rhone,EU-15,GLU062,EUR
+ScheldtR,13,36,13036,Scheldt,EU-15,GLU036,EUR
+ScndnvN,13,8,13008,Scandinavia_North_Coast,EU-15,GLU008,EUR
+Scotland,13,16,13016,Scotland,EU-15,GLU016,EUR
+SeineR,13,46,13046,Seine,EU-15,GLU046,EUR
+SpainCstSE,13,67,13067,Spain_South_and_East_Coast,EU-15,GLU067,EUR
+Sweden,13,12,13012,Sweden,EU-15,GLU012,EUR
+TagusR,13,71,13071,Tagus,EU-15,GLU071,EUR
+TiberR,13,69,13069,Tiber,EU-15,GLU069,EUR
+BlackSeaN,14,47,14047,Black_Sea_North_Coast,Europe_Eastern,GLU047,ROW
+DanubeR,14,54,14054,Danube,Europe_Eastern,GLU054,ROW
+DaugavaR,14,25,14025,Daugava,Europe_Eastern,GLU025,ROW
+DnieperR,14,39,14039,Dnieper,Europe_Eastern,GLU039,ROW
+DniesterR,14,49,14049,Dniester,Europe_Eastern,GLU049,ROW
+DonR,14,53,14053,Don,Europe_Eastern,GLU053,ROW
+NemanR,14,35,14035,Neman,Europe_Eastern,GLU035,ROW
+NevaR,14,17,14017,Neva,Europe_Eastern,GLU017,ROW
+WislaR,14,30,14030,Wisla,Europe_Eastern,GLU030,ROW
+AdrBlkSea,15,55,15055,Adriatic_Sea_Greece_Black_Sea_Coast,Europe_Non_EU,GLU055,ROW
+BlackSeaS,15,70,15070,Black_Sea_South_Coast,Europe_Non_EU,GLU070,ROW
+CaspianSW,15,72,15072,Caspian_Sea_South_West_Coast,Europe_Non_EU,GLU072,ROW
+DanubeR,15,54,15054,NA,Europe_Non_EU,GLU054,ROW
+EJrdnSyr,15,99,15099,Eastern_Jordan_Syria,Europe_Non_EU,GLU099,ROW
+MeditE,15,75,15075,Mediterranean_Sea_East_Coast,Europe_Non_EU,GLU075,ROW
+TigrEuphR,15,84,15084,Tigris_Euphrates,Europe_Non_EU,GLU084,ROW
+ArcticIsl,16,1,16001,Arctic_Ocean_Islands,European Free Trade Association,GLU001,ROW
+DanubeR,16,54,16054,Danube,European Free Trade Association,GLU054,ROW
+Iceland,16,11,16011,Iceland,European Free Trade Association,GLU011,ROW
+PoR,16,57,16057,Po,European Free Trade Association,GLU057,ROW
+RhineR,16,32,16032,Rhine,European Free Trade Association,GLU032,ROW
+RhoneR,16,62,16062,Rhone,European Free Trade Association,GLU062,ROW
+ScndnvN,16,8,16008,Scandinavia_North_Coast,European Free Trade Association,GLU008,ROW
+Sweden,16,12,16012,Sweden,European Free Trade Association,GLU012,ROW
+AdnNicIsl,17,141,17141,Andaman_Nicobar_Islands,India,GLU141,XAS
+BengalBay,17,116,17116,Bay_of_Bengal_North_East_Coast,India,GLU116,XAS
+BengalW,17,118,17118,Yasai,India,GLU118,XAS
+BrahmaniR,17,120,17120,Brahmani,India,GLU120,XAS
+CauveryR,17,153,17153,Cauvery,India,GLU153,XAS
+GangesR,17,110,17110,Ganges_Bramaputra,India,GLU110,XAS
+GodavariR,17,123,17123,Godavari,India,GLU123,XAS
+IndCstE,17,145,17145,India_East_Coast,India,GLU145,XAS
+IndCstNE,17,128,17128,India_North_East_Coast,India,GLU128,XAS
+IndCstS,17,155,17155,India_South_Coast,India,GLU155,XAS
+IndCstW,17,129,17129,India_West_Coast,India,GLU129,XAS
+IndusR,17,89,17089,Indus,India,GLU089,XAS
+IrrawaddyR,17,137,17137,Irrawaddy,India,GLU137,XAS
+KrishnaR,17,140,17140,Krishna,India,GLU140,XAS
+MahanadiR,17,122,17122,Mahanadi,India,GLU122,XAS
+MahiR,17,113,17113,Mahi,India,GLU113,XAS
+NarmadaR,17,235,17235,Narmada,India,GLU235,XAS
+PennarR,17,147,17147,Pennar,India,GLU147,XAS
+SabarmatiR,17,107,17107,Sabarmati,India,GLU107,XAS
+TaptiR,17,117,17117,Tapti,India,GLU117,XAS
+BorneoCstN,18,159,18159,North_Borneo_Coast,Indonesia,GLU159,XAS
+FlyR,18,181,18181,Fly,Indonesia,GLU181,XAS
+IdnE,18,158,18158,Palau_and_East_Indonesia,Indonesia,GLU158,XAS
+IrianJaya,18,167,18167,Irian_Jaya_Coast,Indonesia,GLU167,XAS
+JavaTimor,18,175,18175,Java_Timor,Indonesia,GLU175,XAS
+Kalimantan,18,165,18165,Kalimantan,Indonesia,GLU165,XAS
+SepikR,18,178,18178,Sepik,Indonesia,GLU178,XAS
+Sulawesi,18,164,18164,Sulawesi,Indonesia,GLU164,XAS
+Sumatra,18,163,18163,Sumatra,Indonesia,GLU163,XAS
+Japan,19,51,19051,Japan,Japan,GLU051,XAS
+California,20,217,20217,California_River_Basin,Mexico,GLU217,XLM
+CntAmer,20,135,20135,Southern_Central_America,Mexico,GLU135,XLM
+GrijUsuR,20,133,20133,Grijalva_Usumacinta,Mexico,GLU133,XLM
+MexBaja,20,91,20091,Baja_California,Mexico,GLU091,XLM
+MexCstNW,20,96,20096,Mexico_Northwest_Coast,Mexico,GLU096,XLM
+MexCstW,20,115,20115,Pacific_Central_Coast,Mexico,GLU115,XLM
+MexGulf,20,105,20105,North_Gulf,Mexico,GLU105,XLM
+MexInt,20,114,20114,Mexico_Interior,Mexico,GLU114,XLM
+Papaloapan,20,130,20130,Papaloapan,Mexico,GLU130,XLM
+RioBalsas,20,134,20134,Rio_Balsas,Mexico,GLU134,XLM
+RioGrande,20,231,20231,Rio_Grande_River_Basin,Mexico,GLU231,XLM
+RioLerma,20,131,20131,Rio_Lerma,Mexico,GLU131,XLM
+RioVerde,20,132,20132,Rio_Verde,Mexico,GLU132,XLM
+Tehuantpc,20,136,20136,Isthmus_of_Tehuantepec,Mexico,GLU136,XLM
+UsaColoRS,20,221,20221,Lower_Colorado_River_Basin,Mexico,GLU221,XLM
+YucatanP,20,111,20111,Yucatan_Peninsula,Mexico,GLU111,XLM
+AfrCstNE,21,100,21100,Africa_Red_Sea_Gulf_of_Aden_Coast,Middle East,GLU100,ROW
+ArabianP,21,94,21094,Arabian_Peninsula,Middle East,GLU094,ROW
+ArabianSea,21,104,21104,Arabian_Sea_Coast,Middle East,GLU104,ROW
+CaspianE,21,52,21052,Caspian_Sea_East_Coast,Middle East,GLU052,ROW
+CaspianSW,21,72,21072,Caspian_Sea_South_West_Coast,Middle East,GLU072,ROW
+DeadSea,21,95,21095,Dead_Sea,Middle East,GLU095,ROW
+EJrdnSyr,21,99,21099,Eastern_Jordan_Syria,Middle East,GLU099,ROW
+FarahrudR,21,90,21090,Farahrud,Middle East,GLU090,ROW
+HamuMashR,21,102,21102,HamuniMashkel,Middle East,GLU102,ROW
+Helmand,21,97,21097,Helmand,Middle East,GLU097,ROW
+Iran,21,82,21082,Central_Iran,Middle East,GLU082,ROW
+MeditE,21,75,21075,Mediterranean_Sea_East_Coast,Middle East,GLU075,ROW
+PersianGulf,21,88,21088,Persian_Gulf_Coast,Middle East,GLU088,ROW
+RedSeaE,21,93,21093,Red_Sea_East_Coast,Middle East,GLU093,ROW
+SinaiP,21,98,21098,Sinai_Peninsula,Middle East,GLU098,ROW
+TigrEuphR,21,84,21084,Tigris_Euphrates,Middle East,GLU084,ROW
+AmuDaryaR,22,58,22058,Amu_Darya,Pakistan,GLU058,XAS
+ArabianSea,22,104,22104,Arabian_Sea_Coast,Pakistan,GLU104,XAS
+HamuMashR,22,102,22102,HamuniMashkel,Pakistan,GLU102,XAS
+Helmand,22,97,22097,Helmand,Pakistan,GLU097,XAS
+IndusR,22,89,22089,Indus,Pakistan,GLU089,XAS
+SabarmatiR,22,107,22107,Sabarmati,Pakistan,GLU107,XAS
+Tarim,22,85,22085,Tarim_Interior,Pakistan,GLU085,XAS
+AmurR,23,43,23043,Amur,Russia,GLU043,ROW
+ArcticIsl,23,1,23001,Arctic_Ocean_Islands,Russia,GLU001,ROW
+BalticSea,23,20,23020,Baltic_Sea_Coast,Russia,GLU020,ROW
+BarentsSea,23,9,23009,Russia_Barents_Sea_Coast,Russia,GLU009,ROW
+BlackSeaN,23,47,23047,Black_Sea_North_Coast,Russia,GLU047,ROW
+BlackSeaS,23,70,23070,Black_Sea_South_Coast,Russia,GLU070,ROW
+CaspianNE,23,45,23045,Caspian_Sea_Coast,Russia,GLU045,ROW
+CaspianSW,23,72,23072,Caspian_Sea_South_West_Coast,Russia,GLU072,ROW
+DaugavaR,23,25,23025,Daugava,Russia,GLU025,ROW
+DnieperR,23,39,23039,Dnieper,Russia,GLU039,ROW
+DonR,23,53,23053,Don,Russia,GLU053,ROW
+DvinaRN,23,14,23014,Northern_Dvina,Russia,GLU014,ROW
+Finland,23,13,23013,Finland,Russia,GLU013,ROW
+Gobi,23,42,23042,Gobi_Interior,Russia,GLU042,ROW
+KaraSea,23,5,23005,Kara_Sea_Coast,Russia,GLU005,ROW
+LenaR,23,6,23006,Lena,Russia,GLU006,ROW
+NarvaR,23,22,23022,Narva,Russia,GLU022,ROW
+NemanR,23,35,23035,Neman,Russia,GLU035,ROW
+NevaR,23,17,23017,Neva,Russia,GLU017,ROW
+ObR,23,56,23056,Ob,Russia,GLU056,ROW
+PolandCst,23,33,23033,Poland_Coast,Russia,GLU033,ROW
+RusCstSE,23,37,23037,Russia_South_East_Coast,Russia,GLU037,ROW
+ScndnvN,23,8,23008,Scandinavia_North_Coast,Russia,GLU008,ROW
+SiberiaN,23,3,23003,Siberia_North_Coast,Russia,GLU003,ROW
+SiberiaW,23,4,23004,Siberia_West_Coast,Russia,GLU004,ROW
+SyrDaryaR,23,76,23076,Syr_Darya,Russia,GLU076,ROW
+UralR,23,38,23038,Ural,Russia,GLU038,ROW
+VolgaR,23,18,23018,Volga,Russia,GLU018,ROW
+YeniseiR,23,48,23048,Yenisei,Russia,GLU048,ROW
+AfrCstS,24,198,24198,South_Africa_South_Coast,South Africa,GLU198,AFR
+AfrCstSSW,24,204,24204,South_Africa_West_Coast,South Africa,GLU204,AFR
+AfrCstSW,24,196,24196,Namibia_Coast,South Africa,GLU196,AFR
+LimpopoR,24,199,24199,Limpopo,South Africa,GLU199,AFR
+OrangeR,24,194,24194,Orange,South Africa,GLU194,AFR
+AmazonR,25,168,25168,Amazon,South America_Northern,GLU168,XLM
+MagdalenaR,25,166,25166,Magdalena,South America_Northern,GLU166,XLM
+OrinocoR,25,156,25156,Orinoco,South America_Northern,GLU156,XLM
+SAmerCstN,25,143,25143,Caribbean_Coast,South America_Northern,GLU143,XLM
+SAmerCstNE,25,161,25161,Northeast_South_America_South_Atlantic_Coast,South America_Northern,GLU161,XLM
+AmazonR,26,168,26168,Amazon,South America_Southern,GLU168,XLM
+ArgColoR,26,212,26212,South_America_Colorado,South America_Southern,GLU212,XLM
+ArgCstS,26,215,26215,South_Argentina_South_Atlantic_Coast,South America_Southern,GLU215,XLM
+BrzCstS,26,195,26195,Uruguay_Brazil_South_Atlantic_Coast,South America_Southern,GLU195,XLM
+ChileCstN,26,207,26207,North_Chile_Pacific_Coast,South America_Southern,GLU207,XLM
+ChileCstS,26,169,26169,South_Chile_Pacific_Coast,South America_Southern,GLU169,XLM
+ColEcuaCst,26,157,26157,Colombia_Ecuador_Pacific_Coast,South America_Southern,GLU157,XLM
+LaPuna,26,200,26200,La_Puna_Region,South America_Southern,GLU200,XLM
+NegroR,26,213,26213,Negro,South America_Southern,GLU213,XLM
+PeruCst,26,180,26180,Peru_Pacific_Coast,South America_Southern,GLU180,XLM
+RioLaPlata,26,206,26206,La_Plata,South America_Southern,GLU206,XLM
+AmuDaryaR,27,58,27058,Amu_Darya,South Asia,GLU058,XAS
+BengalBay,27,116,27116,Bay_of_Bengal_North_East_Coast,South Asia,GLU116,XAS
+CaspianE,27,52,27052,Caspian_Sea_East_Coast,South Asia,GLU052,XAS
+FarahrudR,27,90,27090,Farahrud,South Asia,GLU090,XAS
+GangesR,27,110,27110,Ganges_Bramaputra,South Asia,GLU110,XAS
+HamuMashR,27,102,27102,HamuniMashkel,South Asia,GLU102,XAS
+Helmand,27,97,27097,Helmand,South Asia,GLU097,XAS
+IndusR,27,89,27089,Indus,South Asia,GLU089,XAS
+SriLanka,27,154,27154,Sri_Lanka,South Asia,GLU154,XAS
+Korea,28,65,28065,North_and_South_Korea,South Korea,GLU065,XAS
+BengalBay,29,116,29116,Bay_of_Bengal_North_East_Coast,Southeast Asia,GLU116,XAS
+BoHai,29,66,29066,Bo_Hai_Korean_Bay_North_Coast,Southeast Asia,GLU066,XAS
+BorneoCstN,29,159,29159,North_Borneo_Coast,Southeast Asia,GLU159,XAS
+ChaoPhrR,29,146,29146,Chao_Phraya,Southeast Asia,GLU146,XAS
+FlyR,29,181,29181,Fly,Southeast Asia,GLU181,XAS
+GangesR,29,110,29110,Ganges_Bramaputra,Southeast Asia,GLU110,XAS
+Hong,29,109,29109,Hong_(Red_River),Southeast Asia,GLU109,XAS
+IrianJaya,29,167,29167,Irian_Jaya_Coast,Southeast Asia,GLU167,XAS
+IrrawaddyR,29,137,29137,Irrawaddy,Southeast Asia,GLU137,XAS
+JavaTimor,29,175,29175,Java_Timor,Southeast Asia,GLU175,XAS
+Kalimantan,29,165,29165,Kalimantan,Southeast Asia,GLU165,XAS
+Korea,29,65,29065,North_and_South_Korea,Southeast Asia,GLU065,XAS
+MalaysiaP,29,139,29139,Peninsula_Malaysia,Southeast Asia,GLU139,XAS
+Mekong,29,125,29125,Mekong,Southeast Asia,GLU125,XAS
+NewCaledn,29,185,29185,South_Pacific_Islands,Southeast Asia,GLU185,XAS
+PapuaCst,29,173,29173,Papua_New_Guinea_Coast,Southeast Asia,GLU173,XAS
+Phlppns,29,119,29119,Philippines,Southeast Asia,GLU119,XAS
+RusCstSE,29,37,29037,Russia_South_East_Coast,Southeast Asia,GLU037,XAS
+Salween,29,127,29127,Salween,Southeast Asia,GLU127,XAS
+SChinaSea,29,112,29112,South_China_Sea_Coast,Southeast Asia,GLU112,XAS
+SepikR,29,178,29178,Sepik,Southeast Asia,GLU178,XAS
+SittaungR,29,138,29138,Sittaung,Southeast Asia,GLU138,XAS
+SolomonIsl,29,176,29176,Solomon_Islands,Southeast Asia,GLU176,XAS
+ThaiGulf,29,148,29148,Gulf_of_Thailand_Coast,Southeast Asia,GLU148,XAS
+VietnamCst,29,126,29126,Viet_Nam_Coast,Southeast Asia,GLU126,XAS
+XunJiang,29,108,29108,Xun_Jiang,Southeast Asia,GLU108,XAS
+ArgColoR,31,212,31212,South_America_Colorado,Argentina,GLU212,XLM
+ArgCstN,31,210,31210,North_Argentina_South_Atlantic_Coast,Argentina,GLU210,XLM
+ArgCstS,31,215,31215,South_Argentina_South_Atlantic_Coast,Argentina,GLU215,XLM
+ChileCstN,31,207,31207,North_Chile_Pacific_Coast,Argentina,GLU207,XLM
+ChileCstS,31,169,31169,South_Chile_Pacific_Coast,Argentina,GLU169,XLM
+LaPuna,31,200,31200,La_Puna_Region,Argentina,GLU200,XLM
+MarChiq,31,203,31203,Mar_Chiquita,Argentina,GLU203,XLM
+NegroR,31,213,31213,Negro,Argentina,GLU213,XLM
+Pampas,31,209,31209,Pampas_Region,Argentina,GLU209,XLM
+Patagonia,31,214,31214,Central_Patagonia_Highlands,Argentina,GLU214,XLM
+RioLaPlata,31,206,31206,La_Plata,Argentina,GLU206,XLM
+Salinas,31,205,31205,Salinas_Grandes,Argentina,GLU205,XLM
+AmazonR,32,168,32168,Amazon,Colombia,GLU168,XLM
+ColEcuaCst,32,157,32157,Colombia_Ecuador_Pacific_Coast,Colombia,GLU157,XLM
+MagdalenaR,32,166,32166,Magdalena,Colombia,GLU166,XLM
+OrinocoR,32,156,32156,Orinoco,Colombia,GLU156,XLM
+SAmerCstN,32,143,32143,Caribbean_Coast,Colombia,GLU143,XLM
