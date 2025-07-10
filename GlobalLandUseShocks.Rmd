@@ -23,10 +23,10 @@ GCAM_Basin_ID<-read_csv("GCAM_Basin_Key.csv")
 
 ```{r}
 #Merge Historic Data with GCAM Basin IDs
-Hist_LU<-merge(GCAM_Basin_ID, PastLU, by.x=c("GLU_code", "reg_id"), by.y=c("GLU", "GCAM_region_ID"), ALL=TRUE)
+Hist_LU<-merge(GCAM_Basin_ID, PastLU, by.x=c("GLU_code", "reg_id"), by.y=c("GLU", "GCAM_region_ID"), all.y=TRUE)
 
 #Merge BasinID file with Future GCAM Data
-Fut_LU<-merge(GCAM_Basin_ID, LUFile, by.x=c("GLU_Name", "reg_nm"), by.y=c("riverBasin", "region"), ALL=TRUE)
+Fut_LU<-merge(GCAM_Basin_ID, LUFile, by.x=c("GLU_Name", "reg_nm"), by.y=c("riverBasin", "region"), all.y=TRUE)
 
 
 ```
@@ -35,7 +35,7 @@ Fut_LU<-merge(GCAM_Basin_ID, LUFile, by.x=c("GLU_Name", "reg_nm"), by.y=c("river
 # Past Land Use
 
 ```{r}
-PastLU_Recode <- PastLU %>% 
+PastLU_Recode <- Hist_LU %>% 
   mutate(Land_Type = recode(Land_Type, "UrbanLand" = "OtherNotArable", "Tundra"= "OtherNotArable", "RockIceDesert"="OtherNotArable", "HarvCropLand"="Cropland", "Pasture"="ManagedPasture", "Forest"="ManagedForest", "OtherArableLand" = "OtherArable"))
 
 Past_Table <- PastLU_Recode  %>% group_by(Land_Type, year) %>% 
@@ -59,7 +59,7 @@ ggplotly(PastRefLand.plt)
 
 ```{r}
 
-new_Shock_LU<- LUFile  %>% 
+new_Shock_LU<- Fut_LU  %>% 
   separate(Variable, c("Land", "LandUse", "Status")) %>%
   dplyr::select(-c("Model", "Unit"))  %>%
   filter(Land == "LandCover") %>%
@@ -70,15 +70,16 @@ new_Shock_LU<- LUFile  %>%
 
 
 wide_sum_cat_LU<- new_Shock_LU %>% 
-  dplyr::select(-c("Land"))  %>%
-  pivot_longer(!c(scenario, region, riverBasin, LandCover), names_to=c("year"), values_to = "area") %>%
+  dplyr::select(-c("Land",  "reg_id", "Reg8", "basin_nm", "basin_id", "GLU_code"))  %>%
+  pivot_longer(!c(scenario, key, GLU_Name, reg_nm,  LandCover), names_to=c("year"), values_to = "area") %>%
   mutate(year = as.numeric(year)) %>% 
   pivot_wider(names_from = scenario, values_from = c(area)) %>%
   mutate(DifCornShock = CORN1BG - REF) %>%
-  mutate(DifSoyShock = SOY1BG - REF)
+  mutate(DifSoyShock = SOY1BG - REF) %>%
+  select(-c("key"))
 
 futRefLand.plt<-ggplot(wide_sum_cat_LU %>% 
-                              filter(region=="WLD")) +
+                              filter(reg_nm=="WLD")) +
   geom_line(mapping=aes(x=year, y=REF, color=LandCover), lwd=2) +
   scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
   ggtitle("Future Land Use") +
@@ -95,7 +96,7 @@ ggplotly(futRefLand.plt)
 ```{r}
 
 futShocksLand.plt<-ggplot(wide_sum_cat_LU %>% 
-                              filter(region=="WLD")) +
+                              filter(reg_nm=="WLD")) +
   geom_line(mapping=aes(x=year, y=DifCornShock, color=LandCover, linetype="Corn"), lwd=2) +
   geom_line(mapping=aes(x=year, y=DifSoyShock, color=LandCover, linetype="Soy"),  lwd=2) +
   scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
@@ -114,7 +115,7 @@ ggplotly(futShocksLand.plt)
 
 ```{r}
 world_future<-wide_sum_cat_LU %>% 
-  filter(region=="WLD") %>%
+  filter(reg_nm=="WLD") %>%
   filter(year>=2020) %>%
   dplyr::select(c("LandCover", "year", "REF")) %>%
   rename("Land_Type" = "LandCover", "totArea" = "REF" )
@@ -137,3 +138,90 @@ ggplotly(totLandChange.plt)
 # Region of 8 Land Use Changes
 
 ```{r}
+Past_Table_Reg8 <- PastLU_Recode  %>% group_by(Land_Type, year, Reg8) %>% 
+  summarise(Area = sum(value))  %>%
+  mutate(totArea = Area/10) %>%
+  dplyr::select(-c("Area"))
+
+PastReg8RefLand.plt<-ggplot(Past_Table_Reg8) +
+  geom_line(mapping=aes(x=year, y=totArea, color=Land_Type), lwd=2) +
+  scale_color_manual(values=c("#FED439FF",  "#46732EFF", "green","#FD8CC1FF", "#D2AF81FF", "#8A9197FF",   "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland",  "Managed Forest", "Managed Pasture",  "Other Arable Land", "Other Not Arable",  "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
+  ggtitle("Past Land Use") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Area (Mha)', linetype="Shock Type") 
+
+Reg8_Past_LU.plt<-PastReg8RefLand.plt+ facet_wrap(~Reg8)
+
+ggplotly(Reg8_Past_LU.plt)
+
+
+
+wide_reg_sum_cat_LU<- new_Shock_LU %>% 
+  filter(reg_nm !="WLD") %>%
+  filter(scenario == "REF") %>%
+  dplyr::select(-c("Land", "scenario", "reg_id", "basin_nm",  "basin_id", "key", "GLU_code"))  %>%
+  pivot_longer(!c(GLU_Name, reg_nm, Reg8, LandCover), names_to=c("year"), values_to = "area") %>%
+  mutate(year = as.numeric(year))
+
+Fut_Table_Reg8 <- wide_reg_sum_cat_LU  %>% 
+  dplyr::select(-c("reg_nm")) %>%
+  group_by(LandCover, year, Reg8) %>% 
+  summarise(Area = sum(area))  %>%
+  filter(year>=2020) %>%
+  dplyr::select(c("LandCover", "year", "Reg8", "Area")) %>%
+  rename("Land_Type" = "LandCover", "totArea" = "Area" )
+
+Total_Reg_Time_Series<-rbind(Past_Table_Reg8, Fut_Table_Reg8)
+
+totRegLandChange.plt<-ggplot(Total_Reg_Time_Series) +
+  geom_line(mapping=aes(x=year, y=totArea, color=Land_Type), lwd=2) +
+  scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
+  ggtitle("Global Land Use Change") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "bottom") +
+
+  #Add the labels
+  labs( x='Year', y='Area (Mha)') 
+
+Reg8_LU.plt<-totRegLandChange.plt+ facet_wrap(~Reg8)
+
+```
+
+```{r}
+
+
+wide_reg_shock_cat_LU<- new_Shock_LU %>% 
+  filter(reg_nm !="WLD") %>%
+  dplyr::select(-c("Land", "reg_id", "basin_nm",  "basin_id", "reg_nm", "GLU_code"))  %>%
+  pivot_longer(!c(scenario, GLU_Name, key, Reg8, LandCover), names_to=c("year"), values_to = "area") %>%
+  mutate(year = as.numeric(year)) %>%
+  pivot_wider(names_from = scenario, values_from = c(area)) %>%
+  mutate(DifCornShock = CORN1BG - REF) %>%
+  mutate(DifSoyShock = SOY1BG - REF) 
+
+Shock_Table_Corn_Reg8 <- wide_reg_shock_cat_LU %>% 
+  group_by(LandCover, year, Reg8) %>% 
+  filter(year>=2020) %>%
+  summarise(CornShockDif = sum(DifCornShock))
+  
+Shock_Table_Soy_Reg8 <- wide_reg_shock_cat_LU %>% 
+  group_by(LandCover, year, Reg8) %>% 
+  filter(year>=2020) %>%
+  summarise(SoyShockDif = sum(DifSoyShock))
+
+Reg8_Shock_Table<-merge(Shock_Table_Corn_Reg8, Shock_Table_Soy_Reg8, by=c("LandCover", "year", "Reg8"), all=TRUE)
+
+
+futRegShocksLand.plt<-ggplot(Reg8_Shock_Table) +
+  geom_line(mapping=aes(x=year, y=CornShockDif, color=LandCover, linetype="Corn"), lwd=2) +
+  geom_line(mapping=aes(x=year, y=SoyShockDif, color=LandCover, linetype="Soy"),  lwd=2) +
+  scale_color_manual(values=c("#FED439FF", "#46732EFF", "green", "#FD8CC1FF", "#D2AF81FF", "#8A9197FF", "#F05C3BFF","#075149FF", "#370335FF"),  name="Land Use", labels=c("Cropland", "Grassland", "Managed Forest", "Managed Pasture", "Other Arable Land","Other Not Arable", "Shrubland", "Unmanaged Forest", "Unmanaged Pasture")) +
+  ggtitle("Future Land Emission Shocks") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Area (Mha)', linetype="Shock Type") 
+
+Reg8_Shocks_LU.plt<-futRegShocksLand.plt+ facet_wrap(~Reg8)
