@@ -8,10 +8,13 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-setwd("C:/Users/ALIESCH/OneDrive - Environmental Protection Agency (EPA)/Desktop/gcamsoilc")
+
 ```
 
+## Color Schemes
+
 ```{r}
+# Add the color schemes for land use and models
 LUColors <- c("UrbanLand"="#C80813FF", "Tundra"="#71D0F5FF", 
               "Rock/Ice/Desert"="#8A9197FF", "Cropland" = "#FED439FF",
               "HarvCropLand"="#FED439FF", "OtherArableLand" = "#D2AF81FF", 
@@ -22,6 +25,7 @@ LUColors <- c("UrbanLand"="#C80813FF", "Tundra"="#71D0F5FF",
 # Vegetative Based Color Pallet
 vegCEmissions<-c("#46732EFF")
 
+# GCAM soil models
 ModelColors<- c("FAO"="#370335FF", "Houghton" = "#FED439FF", 
                 "GCAM" = "#FED439FF", "HWSD"="#1A9993FF", "SG17" = "#197EC0FF",
                 "SG20"="#F05C3BFF")
@@ -30,11 +34,28 @@ ModelColors<- c("FAO"="#370335FF", "Houghton" = "#FED439FF",
 
 ```
 
+## Load the Files
 
 ```{r}
+#Load the required packages
 library(tidyverse)
+library(terra)
+library(tidyterra)
 
-#Create a series loop to read in all of the data
+#Load the map vector file 
+map<-vect('reg_basin_boundaries_moirai_landcells_3p1_0p5arcmin.shp')
+
+#Load the Basin Key file
+Basin_key<-read.csv("GCAM_Basin_Key.csv")
+
+# Load the new emissions file
+Emission_Type<-read_csv("GCAM_Basin_EmissionType.csv")
+```
+
+## Create the For Loop
+
+```{r}
+#Create a series loop to read in all of the data files
 
 #Create a list of all .csv files in the output folder
 files <- list.files(path="World", pattern = "\\.csv$", 
@@ -45,22 +66,31 @@ data_list <- list()
 
 # Loop over each file and read it into a data frame
 for (file in files) {
+  #read in the data file 
   data <- read.csv(file)
+  #put the data file into the list
   data_list[[file]] <- data
 }
 
 # Combine all data frames into one
 combined_shock_global_data <- bind_rows(data_list)
 
+#Modify the columns to desired data format 
 new_Shock_Emiss<- combined_shock_global_data  %>% 
+  #Split the Emissions column into 4 different columns
   separate(Variable, c("Emissions", "CO2", "LUC", "Source")) %>%
+  #Select the desired variables to keep in the data frane
   dplyr::select(-c("series", "Emissions", "CO2", "LUC", "run", "Unit", "model_run_date", "script_run_date", "comments"))  %>%
+  #Selet the appropriate columns
   dplyr::select(Model:'X2060') %>%
+  #Rename the land use column
   rename("LandUse" = "landType") %>%
+  #Ask for only total emissions
   filter(Source == "Total")
 
 #Reclassify land use types into broader categories
 cat_LU<- new_Shock_Emiss %>% 
+  #Transpose different land uses into the appropriate land use
   mutate(Category = case_when(
   #Cropland category  
   LandUse %in% 
@@ -102,27 +132,29 @@ cat_LU<- new_Shock_Emiss %>%
   )
 )
 
-#Reclassify land use types into broader categories
+#Reclassify regions into Region 8 
 reg_LU<- cat_LU %>% 
   mutate(Reg8 = case_when(
-  #Cropland category  
+  #Define regions  
   region %in% 
     #Africa
     c("Africa_Eastern", "Africa_Southern", "Africa_Western", "Africa_Northern", "South Africa") 
       ~ "AFR",
-    #Other Arable Land
+   #Brazil
    region == "Brazil" ~"BRA",
-    #Pasture category
+    #China
     region=="China" ~ "CHN",
-    #Unamanged pasture category
+    #Europe
     region %in% c("EU-12", "EU-15") 
               ~ "EUR",
-    #Shrubland category
+    #Rest of World
     region %in% c("Canada", "Europe_Eastern", "Europe_Non_EU", "European Free Trade Association", "Middle East", "Russia") ~ "ROW",
-    #Other categories
+    #United States
     region=="USA" ~ "USA",
     region=="WLD" ~ "World",
+    #Rest of Asia
     region %in% c("Australia_NZ", "Central Asia", "India", "Indonesia", "Japan", "Pakistan", "South Asia", "South Korea", "South Asia", "Southeast Asia",  "Taiwan" ) ~ "XAS", 
+   #Rest of South America
    region %in% c("Argentina", "Central America and Caribbean", "Colombia", "Mexico", "South America_Northern", "South America_Southern") ~ "XLM",
     #Default Return Statement
     TRUE~NA_character_
@@ -149,136 +181,167 @@ reg_2x_LU<- reg_LU %>%
 
 #Sum everything up by defined land use category
 sum_cat_emiss<- cat_LU %>% 
+  #Group by model, scenario, region, riverBasin and Category of Land
   group_by(Model, scenario, region, riverBasin, Category) %>% 
+  #Add all other numeric values together
   summarise(across(where(is.numeric), sum))
 
 
 
-#Sum everything up by defined region
+#Sum everything up by defined  region and 8 region
 sum_cat_reg_emiss<- reg_LU %>% 
+  #keep the Model, scenarios, land use category, and region8
   group_by(Model, scenario, Category, Reg8) %>% 
+  #add all binned values together
   summarise(across(where(is.numeric), sum))
 
-#Sum everything up by defined region
-sum_cat_NoUSA_emiss<- reg_2x_LU %>% 
-  group_by(Model, scenario, Category, US_RW) %>% 
-  summarise(across(where(is.numeric), sum))
 
-#Create a long dataframe with land use, years, and area 
+#Create a long dataframe with land use, years, and area by river basin
 wide_sum_cat_emiss<- sum_cat_emiss %>% 
-  pivot_longer(!c(Model, scenario, region, riverBasin, Category), names_to=c("year"), values_to = "emissions") %>%
+  #keep all values defined in the pivot longer 
+  pivot_longer(!c(Model, scenario, region, riverBasin, Category),
+               #column values become years, and emissions are the new row values
+               names_to=c("year"), values_to = "emissions") %>%
   #Remove the extra X value from the dataset
   mutate(across(c('year'), substr, 2, nchar(year))) %>%
+  #convert year values to numeric
   mutate(year = as.numeric(year)) %>% 
+  #Pivot the values into a wider dataframe by scenario (corn, soy, ref)
   pivot_wider(names_from = scenario, values_from = c(emissions)) %>%
+  #Calculate the Difference between the Corn shock and Reference Values
   mutate(DifCornShock = CORN1BG - REF) %>%
+  #Repeat for Soy Shock
   mutate(DifSoyShock = SOY1BG - REF)
 
 
-#Create a long dataframe with regions, land use, years, and area 
+#Create a long dataframe with region 8, land use, years, and area 
 wide_sum_cat_reg_emiss<- sum_cat_reg_emiss %>% 
+  #Keep the models, scenarios, Region 8, and Land Uses
   pivot_longer(!c(Model, scenario, Reg8, Category), names_to=c("year"), values_to = "emissions") %>%
   #Remove the extra X value from the dataset
   mutate(across(c('year'), substr, 2, nchar(year))) %>%
+  #Transfer year to numeric values
   mutate(year = as.numeric(year)) %>% 
+  #convert back to long, using scenario as columns
   pivot_wider(names_from = scenario, values_from = c(emissions)) %>%
+  #calculate the corn shock Difference
   mutate(DifCornShock = CORN1BG - REF) %>%
+  #Repeat for soy shocks
   mutate(DifSoyShock = SOY1BG - REF)
 
-
-#Create a long dataframe with regions, land use, years, and area 
-wide_sum_cat_NonUS_emiss<- sum_cat_NoUSA_emiss %>% 
-  pivot_longer(!c(Model, scenario, US_RW, Category), names_to=c("year"), values_to = "emissions") %>%
-  #Remove the extra X value from the dataset
-  mutate(across(c('year'), substr, 2, nchar(year))) %>%
-  mutate(year = as.numeric(year)) %>% 
-  pivot_wider(names_from = scenario, values_from = c(emissions)) %>%
-  mutate(DifCornShock = CORN1BG - REF) %>%
-  mutate(DifSoyShock = SOY1BG - REF)
 ```
 
-```{r}
+## World Emissions by Model and Year
 
+```{r}
+#Create a global sum of emissions by model and year
 world_sum_cum_emiss<- wide_sum_cat_emiss %>%
+  #Only pull the World values
   filter(region == "WLD") %>%
-  #filter(Category != "UnmanagedLand") %>%
-  filter(year >2015) %>%
-  #filter(Model == "FAO"|Model=="Houghton") %>%
-  group_by(Model, year) %>% 
+  #filer by year
+  filter(year >2019) %>%
+  #filter by model and year
+  group_by(Model, year) %>%
+  #summerize values numerically
   summarise(across(where(is.numeric), sum)) %>%
+  #Create the cumulative sums
   group_by(Model) %>% 
+  #create the cumulative emissions in shocks
   mutate(cumSumCorn=cumsum(DifCornShock)) %>%
+  #create the soy cumulative emissions in shocks
   mutate(cumSumSoy=cumsum(DifSoyShock)) %>%
+  #Create the cumulative reference levels
   mutate(cumSumRef=cumsum(REF))
-  
-#Calculate the net emissions plots by series
-futNetEmissions.plt<-ggplot() +
+```
+
+### Net Corn and Soy Shock Emissions
+
+```{r}
+#Calculate the net shock emissions plots by individual model
+
+#Create a plot of Net Corn and Soy Shocks
+futNetShockEmissions.plt<-ggplot() +
+  #Add the corn shock line by model
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
+  #add the soy shock line by model
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=DifSoyShock, color=Model, linetype = "Soy"), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
-  #Add the title==
-  #ggtitle("Future Net Emissions") +
+  #Add the title
+  ggtitle("Future Net Corn and Soy Shock Emissions") +
   #Add the theme elements
-  #theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
   
+```
 
+## Future Cumulative Corn and Soy Shock Emissions
 
+```{r}
+#Create a future cumulative corn and soy shock emissions
 futCumNetEmissions.plt<-ggplot() +
+  #Add the line for corn shocks
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=cumSumCorn, color=Model, linetype = "Corn"), lwd=2) +
+  #Add the line for soy shocks
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=cumSumSoy, color=Model, linetype = "Soy"), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
-                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
-  #Add the title==
-  #ggtitle("Future Net Emissions") +
+                   labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("Future Cumulative Corn and Soy Shock Emissions") +
   #Add the theme elements
-  #theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+```
 
+## Future Net Annual Reference Emissions by Model
 
-
-world_sum_cum_emiss<- wide_sum_cat_emiss %>%
-  filter(region == "WLD") %>%
-  filter(Category != "UnmanagedLand") %>%
-  filter(year >2015) %>%
-  filter(Model == "FAO"|Model=="Houghton"|Model=="HWSD"|Model=="SG17"|Model=="SG20") %>%
-  group_by(Model, year) %>% 
-  summarise(across(where(is.numeric), sum))
-  
+```{r}
+#Create all of the reference emissions by model on an annual basis
 futRefEmissions.plt<-ggplot() +
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
-  #Add the title==
-  #ggtitle("Future Net Emissions") +
+  #Add the title
+  ggtitle("Future Net Emissions") +
   #Add the theme elements
-  #theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+```
 
+## Future Cumulative Reference Emissions
+
+```{r}
+#Create a plot of the future cumulative emissions across all five models
 futRefCumEmissions.plt<-ggplot() +
   geom_line(world_sum_cum_emiss, mapping=aes(x=year, y=cumSumRef, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
-  #Add the title==
-  #ggtitle("Future Net Emissions") +
+  #Add the title
+  ggtitle("Future Cumulative Emissions") +
   #Add the theme elements
-  #theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+```
 
-
+### Land Use Net Emissions in the FAO Model
+```{r}
+#Create a model of all different land use types in the world
 world_LU_FAO_cum_emiss<- wide_sum_cat_emiss %>%
+  #filter to the world
   filter(region == "WLD") %>%
+  #Remove the Unmanaged Land Category
   filter(Category != "UnmanagedLand") %>%
+  #Keep all years after 2015
   filter(year >2015) %>%
+  #Filter the FAO Model
   filter(Model == "FAO") 
 
 #Calculate the net emissions plots by series
@@ -287,85 +350,528 @@ futFAOLUNetEmissions.plt<-ggplot()+
   #Add the custom color manual and labels
       scale_color_manual(values=c(LUColors, name = "Land Use"), 
                       labels = c("Forest", "Grassland", "Harvested Cropland", "Other Arable Land", "Pasture", "Shrubland", "Tundra", "Unmanaged Pasture", "Urban Land")) +
+  #Add a title
   ggtitle("FAO Global Land Use Emissions in the Reference Scenario") + 
-  labs(y="Emissions (Mt)")
+  #Add labels
+  labs(x="Year", y="Emissions (Mt)")
 ```
 
-```{r}
-world_reg_sum_cum_emiss<- wide_sum_cat_reg_emiss %>%
-  filter(Reg8 != "World") %>%
-  filter(year >2015) %>%
-  group_by(Model, Reg8, year) %>% 
-  summarise(across(where(is.numeric), sum)) %>%
-  group_by(Model, Reg8) %>% 
-  mutate(cumSumCorn=cumsum(DifCornShock)) %>%
-  mutate(cumSumSoy=cumsum(DifSoyShock)) %>%
-  mutate(cumSumRef=cumsum(REF))
+# Summerize Data by Region 8
 
-futRegNetEmissions.plt<-ggplot() +
-  #geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
-  geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+```{r}
+# Summerize data by model and Reg8 Level
+world_reg_sum_cum_emiss<- wide_sum_cat_reg_emiss %>%
+  #remove the global projection
+  filter(Reg8 != "World") %>%
+  #Create a year greater than 2015
+  filter(year >2015) %>%
+  #Group by model, reg8, and year
+  group_by(Model, Reg8, year) %>%
+  #Add everything together
+  summarise(across(where(is.numeric), sum)) %>%
+  #Group by model and Region of 8
+  group_by(Model, Reg8) %>% 
+  #Create a cumulative sum of the corn shock
+  mutate(cumSumCorn=cumsum(DifCornShock)) %>%
+  #Create a cumulative sum of the soy shock
+  mutate(cumSumSoy=cumsum(DifSoyShock)) %>%
+  #Create a cumulative reference value
+  mutate(cumSumRef=cumsum(REF))
+```
+
+
+## Facet Wrap Regional Sums
+
+```{r}
+#This code splits the global basins into 2 major types: Low and High Emissions and creates plots of output
+
+#Create a regional emission plot
+futRegNetEmissions.plt<-ggplot(data=dplyr::filter(world_reg_sum_cum_emiss,
+                                         (Reg8 == "XAS" |Reg8=="AFR"))) +
+  #Add the reference values
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
-  #Add the title==
-  #ggtitle("Future Net Emissions") +
+  #Add the title
+  ggtitle("Future Net Emissions in Higher Emission Basins") +
   #Add the theme elements
-  #theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
-  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+  labs( x='Year', y='Total Emissions (Mt)') 
 
+#Add the facet wrap to display the two basins
 FW_futRegNet.plt<- futRegNetEmissions.plt + facet_wrap(~Reg8)
 
+#Create a regional emission plot for the Lower emission basins
+futRegNetEmissionsLOW.plt<-ggplot(data=dplyr::filter(world_reg_sum_cum_emiss,
+                                        #Filter out XAS and AFR
+                                         Reg8 != "XAS" & Reg8!="AFR")) +
+  #Add the reference values
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("Future Net Emissions in the Lower Basins") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
 
+#Create the facet wrap for the remaining 6 basins
+FW_futRegNetLow.plt<- futRegNetEmissionsLOW.plt + facet_wrap(~Reg8)
+```
+
+## Cumulative Regional Sums
+
+```{r}
+#This code calculates the cumulative regional emissions of each regeion
+
+#Calculate the cumulative regional emissions
 futRegCumEmissions.plt<-ggplot() +
-  #geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
+  #Use the cumulative Reference Sum for each model
   geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=cumSumRef, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
-  #Add the title==
-  #ggtitle("Future Net Emissions") +
+  #Add the title
+  ggtitle("Future Cumulative Emissions by Region") +
   #Add the theme elements
-  #theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
   #Add the labels
-  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+  labs( x='Year', y='Total Emissions (Mt)') 
 
+#Create a facet wrap for the different regions
 FW_futRegCum.plt<- futRegCumEmissions.plt + facet_wrap(~Reg8)
 
+```
 
+## Future Regional Corn and Soy Shocks
+
+```{r}
+#Create a regional cumulative emission plot with both corn and soy shocks
 futRegShockCumEmissions.plt<-ggplot() +
+  #Add the corn shock line
   geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=cumSumCorn, color=Model, linetype = "Corn"), lwd=2) +
+  #Add the soy shock line
   geom_line(world_reg_sum_cum_emiss, mapping=aes(x=year, y=cumSumSoy, color=Model, linetype = "Soy"), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
-  #Add the title==
-  #ggtitle("Future Net Emissions") +
+  #Add the title
+  ggtitle("Future Cumulative Corn and Soy Shocks") +
   #Add the theme elements
-  #theme(plot.title = element_text(hjust = 0.5)) +
-  #Add the labels
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels and line type legend
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
 
+#Add the regional facet wraps to display by region
 FW_futRegShockCum.plt<- futRegShockCumEmissions.plt + facet_wrap(~Reg8)
   
 ```
 
+## Emissions Breakdowns by Basin in Key Change Areas
+
 ```{r}
-world_NoUSA_sum_cum_emiss<- wide_sum_cat_NonUS_emiss %>%
-  filter(US_RW != "World") %>%
-  filter(year >2015) %>%
-  group_by(Model, US_RW, year) %>% 
-  summarise(across(where(is.numeric), sum)) %>%
-  group_by(Model, US_RW) %>% 
-  mutate(cumSumCorn=cumsum(DifCornShock)) %>%
-  mutate(cumSumSoy=cumsum(DifSoyShock)) %>%
-  mutate(cumRef=cumsum(REF))
+#Sum everything up by defined region
+sum_cat_region_reg_emiss<- reg_LU %>% 
+  #group by model, scenario, land use category, region, and 8 region area
+  group_by(Model, scenario, Category, region, Reg8) %>% 
+  #sum all emissions together by group
+  summarise(across(where(is.numeric), sum))
 
-futNonUSANetEmissions.plt<-ggplot() +
-  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=REF, color=Model), lwd=2) +
-  #geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
-  #geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifSoyShock, color=Model, linetype = "Soy"), lwd=2) +
+#Create a long dataframe with regions, land use, years, and area 
+wide_sum_cat_region_reg_emiss<- sum_cat_region_reg_emiss %>% 
+  #pivot longer on the above mentioned column names, changing values to year, and call emissions
+  pivot_longer(!c(Model, scenario, region, Reg8, Category), names_to=c("year"), values_to = "emissions") %>%
+  #Remove the extra X value from the dataset
+  mutate(across(c('year'), substr, 2, nchar(year))) %>%
+  #create the year as a numeric variable
+  mutate(year = as.numeric(year)) %>% 
+  #Switch the frame back to a wide dataframe
+  pivot_wider(names_from = scenario, values_from = c(emissions)) %>%
+  #Calculate the differences in corn shocks
+  mutate(DifCornShock = CORN1BG - REF) %>%
+  #Calculate the differences in soy shocks
+  mutate(DifSoyShock = SOY1BG - REF)
+
+#Create a wide data frame of the sums 
+sum_wide_cat_region_reg_emission<- wide_sum_cat_region_reg_emiss %>%
+  #grouped by model, year, region, and Region 8
+  group_by(Model, year, region, Reg8) %>% 
+  #summerize the values
+  summarise(across(where(is.numeric), sum))
+```
+
+# Percentage of Each Region Emissions
+
+```{r}
+#Merge the basin_graphics file with the sum_wide_cat_region_reg_emission file to get the total emissions per model per year broken down by basin
+
+total_per<-merge(basin_graphics, sum_wide_cat_region_reg_emission, by.x=c("Model", "year", "region"), by.y=c("Model", "year", "region")) %>%
+  select("Model", "year", "region", "riverBasin", "REF.x", "REF.y") %>%
+  filter(year>"2019") %>%
+  mutate(per_emissions=(REF.x/REF.y)*100) %>%
+  group_by(region, riverBasin) %>%
+  summarise(across(where(is.numeric), mean)) %>%
+  mutate_at(vars(per_emissions), funs(round(., 1)))
+
+key_per<-merge(Basin_key, total_per, by.x=c("reg_nm", "GLU_Name"), by.y=c("region", "riverBasin"))
+
+#Dissolve maps into a regional file
+regions <- map %>% 
+  group_by(reg_nm) %>% 
+  summarise()
+
+#merge with the map file
+per_map<-merge(map, key_per, by=("key"))
+
+
+
+
+my_sf_object <- sf::st_as_sf(per_map)
+layer_sf_object <-sf::st_as_sf(regions)
+
+my_sf_object <- sf::st_cast(my_sf_object, "MULTIPOLYGON")
+layer_sf_object  <- sf::st_cast(layer_sf_object , "MULTIPOLYGON")
+
+
+my_sf_object$combined_label<-paste0(my_sf_object$GLU_Name, "\nRegion: ", my_sf_object$reg_nm.y, "\nAverage Emission: ", my_sf_object$REF.x)
+
+
+region_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=REF.y))  +
+     geom_sf_text(aes(label=per_emissions), size=3) +
+     scale_fill_gradient(low="white",high="darkgreen") + 
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+fig <- ggplotly(region_plot.plt) %>%
+  layout(title = "Total Regional Emissions and Percentage from Each Basin")
+fig
+
+
+
+
+
+```
+
+# Regional Breakdowns
+
+## XAS (Rest of Asia)
+
+```{r}
+#This code chunk creates the Rest of Asia (XAS) regional aggregations 
+
+#Calculate Regional Net Emissions for the upper emission basins in the Rest of Asia
+XAS1_futReg_Region_NetEmissions.plt<-
+  #filter by region and year, choosing the high emissions basins
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "XAS" & year >2019 & (region=="India"|region=="Indonesia"|region=="Southeast Asia"))) +
+  #Add a line plot of the reference values
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("High Emission Other Asian Basins") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Facet wrap the XAS file to display all three regions
+XAS1_FW_futReg_region_Net.plt<- XAS1_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+#Model the rest of the of Asia regions
+XAS2_futReg_Region_NetEmissions.plt<-
+  #Filter out the three regions already graphed using the &/! change
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "XAS" & year >2019 & region!="India" & region!="Indonesia"&region!="Southeast Asia")) +
+  #draw the reference lines
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("Lower Emission Basins from the Rest of Asia") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Add the facet wrap to plot the other regions
+XAS2_FW_futReg_region_Net.plt<- XAS2_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+```
+
+
+## Africa 
+
+```{r}
+#The African Region of 8 was split into 3 different maps
+
+#West African Basins 
+Af1_futReg_Region_NetEmissions.plt<-
+  #Filter in the Western Africa Basins after 2019
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "AFR" & year >2019  & region=="Africa_Western")) +
+  #Add in the line plot of reference values
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("Future Net Emissions in Western Africa") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Add the facet wrapping 
+Af1_FW_futReg_region_Net.plt<- Af1_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+
+#Eastern and Southern African Emissions are the next highest level
+Af2_futReg_Region_NetEmissions.plt<-
+  #filter out Eastern and Southern Africa regions
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "AFR" & year >2019  & (region=="Africa_Eastern"|region=="Africa_Southern"))) +
+  #Add the line plots to the figure
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("African Future Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Add the facet wraps to display the figures
+Af2_FW_futReg_region_Net.plt<- Af2_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+#Lower Basin Emissions of Africa
+Af3_futReg_Region_NetEmissions.plt<-
+  #filter out all regions graphed before 
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "AFR" & year >2019 & region!="Africa_Eastern" & region!="Africa_Southern"&region!="Africa_Western")) +
+  #Add the line plots by model
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("African Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Create the third faceted regional plot
+Af3_FW_futReg_region_Net.plt<- Af3_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+```
+
+## Rest of the World (ROW)
+
+```{r}
+#The rest of the world basins are broken down by emission levels
+
+#Select for Canada and Russia as regions
+ROW1_futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "ROW" & year >2019 & (region=="Canada"|region=="Russia")) ) +
+  #Add the line plot with the model as the color
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("Rest of the World Future Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Display differences by region with a facet wrap
+ROW1_FW_futReg_region_Net.plt<- ROW1_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+#Create a plot for all other regions in the Rest of the World
+ROW2_futReg_Region_NetEmissions.plt<-
+  #change basin selection to &/! vs the or query
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "ROW" & year >2019 & region!="Canada" &region!="Russia"))  +
+  #Add the line files by different model colors
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("Rest of the World Future Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+ROW2_FW_futReg_region_Net.plt<- ROW2_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+```
+
+
+## Europe (EUR)
+
+```{r}
+#Create a plot of the two European regions
+EUR_futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "EUR" & year >2019 ))  +
+  #Add the line plots with different models
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("European Future Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+EUR_FW_futReg_region_Net.plt<- EUR_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+```
+
+## Rest of Latin America (XLM)
+
+```{r}
+
+#Create a graph of the Regions in the Rest of Latin America
+XLM_futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "XLM" & year >2019 ))  +
+  #Add in the line graphs
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) + 
+  #Add the title
+  ggtitle("Rest of Latin America Future Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Add the regional facet wrap
+XLM_FW_futReg_region_Net.plt<- XLM_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+```
+
+## Brazil (BRA)
+
+```{r}
+#plot the emissions for the Brazilian region
+BRA_futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "BRA" & year >2019 ))  +
+  #Add the line plots by model
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("Brazilian Future Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Add the facet wrap for the region
+BRA_FW_futReg_region_Net.plt<- BRA_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+```
+
+## China (CHN)
+```{r}
+
+#Create a figure for the Chinese emissions
+CHN_futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "CHN" & year >2019 ))  +
+  #Add the line plots by model
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("Chinese Future Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Add the facet wrapping for the basin
+CHN_FW_futReg_region_Net.plt<- CHN_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+```
+
+## United States (USA)
+```{r}
+#Create an overall regional emission map with the USA
+USA_futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "USA" & year >2019 ))  +
+  #Add the lines by model
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title
+  ggtitle("United States Future Net Emissions") +
+  #Add the theme elements
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)') 
+
+#Create the Facet Wrap for the USA Region
+USA_FW_futReg_region_Net.plt<- USA_futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+```
+
+
+# River Basin Levels
+
+```{r}
+basin_graphics<-wide_sum_cat_emiss %>%
+  group_by(Model, year, region, riverBasin) %>% 
+  summarise(across(where(is.numeric), sum))
+
+write.csv(basin_graphics, "basin_summary.csv")
+
+#merge with Basin Graphics
+Basin_Emission<-merge(basin_graphics, Emission_Type, by.x=c("region", "riverBasin"), by.y = c("reg_nm", "GLU_Name"))
+
+#Sum everything up by defined  region and 8 region
+average_basin_emiss_type<- Basin_Emission %>% 
+    #keep the Model, scenarios, land use category, and region8
+    group_by(LineType, Model, year) %>% 
+    #add all binned values together
+    summarise(across(where(is.numeric), mean, na.rm=TRUE)) 
+
+```
+
+
+## River Basin Level 
+
+### Indonesia
+
+
+```{r}
+
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(basin_graphics,
+                                          year >2019, region=="Indonesia" &
+                              (str_detect(riverBasin, '^Kali')|str_detect(riverBasin, '^Iria')|str_detect(riverBasin, '^Sum'))
+                            )) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
@@ -376,10 +882,15 @@ futNonUSANetEmissions.plt<-ggplot() +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
 
-FW_fut_NonUS_Net.plt<- futNonUSANetEmissions.plt + facet_wrap(~US_RW)
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~riverBasin+region)
 
-futNonUSACumSumRefEmissions.plt<-ggplot() +
-  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=cumRef, color=Model), lwd=2) +
+
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(basin_graphics,
+                                          year >2019, region=="Indonesia" &
+                              (!str_detect(riverBasin, '^Kali')& !str_detect(riverBasin, '^Iria') & !str_detect(riverBasin, '^Sum'))
+                            )) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
@@ -390,12 +901,21 @@ futNonUSACumSumRefEmissions.plt<-ggplot() +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
 
-FW_fut_NonUS_CumSum_Ref.plt<- futNonUSACumSumRefEmissions.plt + facet_wrap(~US_RW)
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~riverBasin+region)
+```
 
+### India
 
-futNonUSANetSumEmissions.plt<-ggplot() +
-  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifCornShock, color=Model, linetype = "Corn"), lwd=2) +
-  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=DifSoyShock, color=Model, linetype = "Soy"), lwd=2) +
+```{r}
+
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(basin_graphics,
+                                          year >2019, region=="India" 
+                            &
+                              (str_detect(riverBasin,'^Gan'))
+                               #|#str_detect(riverBasin, #'^Iria')|str_detect(riverBasin, '^Sum'))
+                            )) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
@@ -406,11 +926,15 @@ futNonUSANetSumEmissions.plt<-ggplot() +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
 
-FW_fut_NonUS_NetSum.plt<- futNonUSANetSumEmissions.plt + facet_wrap(~US_RW)
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~riverBasin+region)
 
-futNonUSACumSumEmissions.plt<-ggplot() +
-  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=cumSumCorn, color=Model, linetype = "Corn"), lwd=2) +
-  geom_line(world_NoUSA_sum_cum_emiss, mapping=aes(x=year, y=cumSumSoy, color=Model, linetype = "Soy"), lwd=2) +
+
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(basin_graphics,
+                                          year >2019, region=="Indonesia" &
+                              (!str_detect(riverBasin, '^Kali')& !str_detect(riverBasin, '^Iria') & !str_detect(riverBasin, '^Sum'))
+                            )) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
                       labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
@@ -421,5 +945,377 @@ futNonUSACumSumEmissions.plt<-ggplot() +
   #Add the labels
   labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
 
-FW_fut_NonUS_CumSum.plt<- futNonUSACumSumEmissions.plt + facet_wrap(~US_RW)
-  
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~riverBasin+region)
+```
+
+
+# Basic Emission Types
+
+```{r}
+
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(average_basin_emiss_type,
+                                         year >2019 & LineType != "NA")) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~LineType )
+```
+
+
+
+
+### Complex Plots
+
+```{r}
+
+futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(Basin_Emission,
+                                         Reg8 == "AFR" & year >2019 & EmissionType=="Complex")) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_futReg_region_Net.plt<- futReg_Region_NetEmissions.plt + facet_wrap(~region+riverBasin)
+
+```
+
+# All Emissions
+```{r}
+
+futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(Basin_Emission,
+                                         Reg8 == "AFR" & year >2019 & EmissionType=="AllPositive")) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_futReg_region_Net.plt<- futReg_Region_NetEmissions.plt + facet_wrap(~region+riverBasin)
+
+```
+
+
+
+
+
+
+```{r}
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(basin_graphics,
+                                         region == "EU-12" & year >2019)) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~riverBasin)
+```
+
+
+### ROW (Rest of World)
+
+```{r}
+
+futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "ROW" & year >2019)) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_futReg_region_Net.plt<- futReg_Region_NetEmissions.plt + facet_wrap(~region)
+
+```
+
+# Basin Breakdown by Region
+
+```{r}
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(basin_graphics,
+                                         region == "Russia" & year >2019)) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~riverBasin)
+```
+
+```{r}
+futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "AFR" & year >2019)) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_futReg_region_Net.plt<- futReg_Region_NetEmissions.plt + facet_wrap(~region)
+```
+
+```{r}
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(basin_graphics,
+                                         region == "Africa_Southern" & year >2019)) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~riverBasin)
+```
+
+
+```{r}
+futReg_Region_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(sum_wide_cat_region_reg_emission,
+                                         Reg8 == "XLM" & year >2019)) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_futReg_region_Net.plt<- futReg_Region_NetEmissions.plt + facet_wrap(~region)
+```
+
+```{r}
+futReg_Region_Basin_NetEmissions.plt<-
+  ggplot(data=dplyr::filter(basin_graphics,
+                                         region == "South America_Southern" & year >2019)) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_wrap(~riverBasin)
+```
+
+# Maximum Ranges
+
+```{r}
+#Sum everything up by defined land use category
+sum_range_cat_emiss<- cat_LU %>% 
+  filter(scenario=='REF') %>%
+  #Group by model, region, riverBasin and Category of Land
+  group_by(Model, region, riverBasin) %>% 
+  #Add all other numeric values together
+  summarise(across(where(is.numeric), sum))
+
+#Calculate the maximum and minimum emissions rates for every year in every basin and region.
+range_wide_sum_cat_emiss<- sum_range_cat_emiss %>%
+   #keep all values defined in the pivot longer 
+  pivot_longer(!c(Model, region, riverBasin),
+               #column values become years, and emissions are the new row values
+               names_to=c("year"), values_to = "emissions") %>%
+  #Remove the extra X value from the dataset
+  mutate(across(c('year'), substr, 2, nchar(year))) %>%
+  #convert year values to numeric
+  mutate(year = as.numeric(year)) %>%
+  filter(year > 2019) %>%
+  group_by(region, riverBasin, year) %>%
+  summarise(
+    max_value = max(emissions),
+    min_value = min(emissions)
+  ) %>%
+  mutate(rangeModel=max_value-min_value)
+
+#Find only the maximum annual differences
+max_range<-range_wide_sum_cat_emiss %>%
+  group_by(region, riverBasin) %>%
+  summarise(
+    max_range = max(rangeModel), 
+    min_val=min(min_value),
+    max_val=max(max_value)) %>%
+  mutate(category = case_when(max_range < 1 ~ "Less than 1 Mt", 
+                              max_range >=1 & max_range < 12 ~ "1 Mt - Less than 12 Mt",
+                              max_range >=12 & max_range < 25 ~ "12 Mt - Less than 25 Mt",
+                              max_range >=25 & max_range < 50 ~ "25 Mt - Less than 50 Mt",
+                              max_range >=50 ~ "Greater than 50 Mt", 
+                              is.na(max_range) ~ "NA",
+                              TRUE ~ "NA"))
+
+merged_range<-merge(Basin_key, max_range, by.x=c("GLU_Name", "reg_nm"), by.y=c("riverBasin", "region"))
+
+
+
+#merge the map with the range
+map_range<-merge(map, merged_range, by.x=c("key"), by.y=c("key"))
+
+map_range$category <- factor(map_range$category, levels = c("Less than 1 Mt", "1 Mt - Less than 12 Mt", "12 Mt - Less than 25 Mt", "25 Mt - Less than 50 Mt", "Greater than 50 Mt"))
+
+cols <- c("Less than 1 Mt" = "#CAF0F8", "1 Mt - Less than 12 Mt" = "#90E0EF", "12 Mt - Less than 25 Mt" = "#00B4D8", "25 Mt - Less than 50 Mt" =  "#0077B6", "Greater than 50 Mt" = "#03045E")
+
+range_plot.plt<-ggplot(map_range)+
+     geom_spatvector(aes(fill=category)) +
+     scale_fill_manual("Model Emission Range (Mt)", values=cols)
+```
+
+# Major Emission Differential Basins
+
+```{r}
+
+#merge basin graphics file with merged range to get annualized values
+high_freq_merge<-merge(basin_graphics, merged_range, by.x=c("riverBasin", "region"), by.y=c("GLU_Name", "reg_nm"))
+
+high_variability<-high_freq_merge %>% 
+  subset(max_range >= 25) %>%
+  filter(year > 2019)
+
+HV_futReg_Region_Basin_NetEmissions1.plt<-
+  ggplot(data=dplyr::filter(high_variability, riverBasin == "GangesR" |riverBasin =="Sumatra"|riverBasin=="Kalimantan")) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_HV_futReg_Region_Basin_NetEmissions1.plt<- HV_futReg_Region_Basin_NetEmissions1.plt + facet_wrap(~riverBasin+region)
+
+
+HV_futReg_Region_Basin_NetEmissions2.plt<-
+  ggplot(data=dplyr::filter(high_variability, riverBasin=="Sweden"|riverBasin=="Finland"|riverBasin=="AfrCstW"|riverBasin=="IrianJaya"|riverBasin=="NileR"|riverBasin=="NigerR")) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_HV_futReg_Region_Basin_NetEmissions2.plt<- HV_futReg_Region_Basin_NetEmissions2.plt + facet_wrap(~riverBasin+region)
+
+HV_futReg_Region_Basin_NetEmissions3.plt<-
+  ggplot(data=dplyr::filter(high_variability, riverBasin=="IndusR"|riverBasin=="LenaR"|riverBasin=="SiberiaW"|riverBasin=="Mackenzie"|riverBasin=="NWTerr"|riverBasin=="YeniseiR"|riverBasin=="ArgCstS"|riverBasin=="HudsonBay"|riverBasin=="ArgCstN")) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_HV_futReg_Region_Basin_NetEmissions3.plt<- HV_futReg_Region_Basin_NetEmissions3.plt + facet_wrap(~riverBasin+region)
+
+
+
+HV_futReg_Region_Basin_NetEmissions4.plt<-
+  ggplot(data=dplyr::filter(high_variability, riverBasin=="Yangtze"|riverBasin=="Phlppns"|riverBasin=="ObR"|riverBasin=="VolgaR"|riverBasin=="NelsonR"|riverBasin=="RioLaPlata"|riverBasin=="AfrCstE")) +
+  geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
+      #Add the custom color manual and labels
+      scale_color_manual(values=c(ModelColors, name = "Emissions"), 
+                      labels = c("FAO Glosis", "Houghton", "HWSD", "SG17", "SG20")) +
+  #Add the title==
+  #ggtitle("Future Net Emissions") +
+  #Add the theme elements
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #Add the labels
+  labs( x='Year', y='Total Emissions (Mt)', linetype="Shock Type") 
+
+FW_HV_futReg_Region_Basin_NetEmissions4.plt<- HV_futReg_Region_Basin_NetEmissions4.plt + facet_wrap(~riverBasin+region)
+
+```
+
+# Display the New Maps
+
+```{r}
+
+
+
+
+
+#Merge with shapefile
+map_type<-merge(map, Emission_Type, by.x=c("key"), by.y=c("key"))
+
+#
+basintype_plot.plt<-ggplot(data=dplyr::filter(map_type, year==2020))+
+     geom_spatvector(aes(fill=EmissionType)) +
+     scale_fill_manual("Model Emission Type")
+     
+LinePatterntype_plot.plt<-ggplot(data=dplyr::filter(map_type))+
+     geom_spatvector(aes(fill=LineType)) +
+     scale_fill_manual("Model Emission Type")
+
+MaxModel_plot.plt<-ggplot(data=map_type)+
+     geom_spatvector(aes(fill=MaxLine)) +
+     scale_fill_manual("Maximum Model")
+
+MinModel_plot.plt<-ggplot(data=map_type)+
+     geom_spatvector(aes(fill=MinLine)) +
+     scale_fill_manual("Maximum Model")
+

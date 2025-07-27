@@ -1,0 +1,393 @@
+GLU_Name,reg_id,basin_id,key,reg_nm,Reg8,EmissionType,MaxLine,MinLine,LineType
+AdrBlkSea,12,55,12055,EU-12,EUR,AllPositive,SG17,Houghton,Decrease
+AdrBlkSea,15,55,15055,Europe_Non_EU,ROW,AllPositive,SG17,HWSD,Decrease
+AfrIntN,3,144,3144,Africa_Northern,AFR,AllPositive,Houghton,SG17,Decrease
+AfrIntS,4,197,4197,Africa_Southern,AFR,AllPositive,HWSD,SG17,Decrease
+AngolaCst,4,182,4182,Africa_Southern,AFR,AllPositive,Houghton,SG17,Decrease
+AmazonR,7,168,7168,Brazil,BRA,AllPositive,SG17,SG20,Decrease
+AmazonR,25,168,25168,South America_Northern,XLM,AllPositive,SG17,HWSD,Decrease
+MeditS,3,80,3080,Africa_Northern,AFR,AllPositive,FAO,SG17,Decrease
+ArgColoR,31,212,31212,Argentina,XLM,AllPositive,SG17,SG20,Decrease
+BalticSea,12,20,12020,EU-12,EUR,AllPositive,HWSD,SG20,Decrease
+BlackSeaN,14,47,14047,Europe_Eastern,ROW,AllPositive,SG17,Houghton,Decrease
+BoHai,11,66,11066,China,CHN,AllPositive,HWSD,Houghton,Decrease
+BrzCstN,7,172,7172,Brazil,BRA,AllPositive,FAO,SG17,Decrease
+BrzCstS,7,195,7195,Brazil,BRA,AllPositive,SG17,HWSD,Decrease
+CaspianNE,10,45,10045,Central Asia,XAS,AllPositive,SG17,Houghton,Decrease
+CaspianSW,10,72,10072,Central Asia,XAS,AllPositive,SG17,HWSD,Decrease
+ChileCstS,26,169,26169,South America_Southern,XLM,AllPositive,SG17,FAO,Decrease
+ChinaCst,11,78,11078,China,CHN,AllPositive,SG17,Houghton,Decrease
+CntAmer,9,135,9135,Central America and Caribbean,XLM,AllPositive,FAO ,Houghton,Decrease
+ColEcuaCst,9,157,9157,Central America and Caribbean,XLM,AllPositive,SG17,FAO,Decrease
+DanubeR,12,54,12054,EU-12,EUR,AllPositive,SG17,HWSD,Decrease
+DanubeR,13,54,13054,EU-15,EUR,AllPositive,SG17,HWSD,Decrease
+FlyR,29,181,29181,Southeast Asia,XAS,AllPositive,SG20,Houghton,Decrease
+FraserR,8,27,8027,Canada,ROW,AllPositive,SG17,Houghton,Decrease
+GangesR,17,110,17110,India,XAS,AllPositive,SG17,HWSD,Decrease
+Gironde,13,64,13064,EU-15,EUR,AllPositive,SG17,HWSD,Decrease
+Gobi,11,42,11042,China,CHN,AllPositive,Houghton,SG20,Decrease
+GrijUsuR,9,133,9133,Central America and Caribbean,XLM,AllPositive,SG17,HWSD,Decrease
+Hong,11,109,11109,China,CHN,AllPositive,FAO,Houghton,Decrease
+Hong,29,109,29109,Southeast Asia,XAS,AllPositive,SG17,SG20,Decrease
+IdnE,18,158,18158,Indonesia,XAS,AllPositive,SG17,HWSD,Decrease
+IndCstNE,17,128,17128,India,XAS,AllPositive,SG17,SG20,Decrease
+IndCstW,17,129,17129,India,XAS,AllPositive,HWSD,SG17,Decrease
+IndusR,17,89,17089,India,XAS,AllPositive,Houghton,SG20,Decrease
+Ireland,13,24,13024,EU-15,EUR,AllPositive,HWSD,SG20,Decrease
+IrianJaya,18,167,18167,Indonesia,XAS,AllPositive,FAO,Houghton,Decrease
+IrianJaya,29,167,29167,Southeast Asia,XAS,AllPositive,SG17,SG20,Decrease
+IrrawaddyR,11,137,11137,China,CHN,AllPositive,Houghton,SG17,Decrease
+IrrawaddyR,17,137,17137,India,XAS,AllPositive,SG17,FAO,Decrease
+IrrawaddyR,29,137,29137,Southeast Asia,XAS,AllPositive,SG17,HWSD,Decrease
+JavaTimor,18,175,18175,Indonesia,XAS,AllPositive,Houghton,SG20,Decrease
+Korea,28,65,28065,South Korea,XAS,AllPositive,FAO,HWSD,Decrease
+MagdalenaR,32,166,32166,Colombia,XLM,AllPositive,SG17,SG20,Decrease
+MahanadiR,17,122,17122,India,XAS,AllPositive,SG17,SG20,Decrease
+MeditE,15,75,15075,Europe_Non_EU,ROW,AllPositive,Houghton,SG20,Decrease
+Mekong,11,125,11125,China,CHN,AllPositive,HWSD,SG17,Decrease
+Mekong,29,125,29125,Southeast Asia,XAS,AllPositive,SG17,HWSD,Decrease
+MexInt,20,114,20114,Mexico,XLM,AllPositive,Houghton,FAO,Decrease
+NarmadaR,17,235,17235,India,XAS,AllPositive,Houghton,HWSD,Decrease
+NegroR,31,213,31213,Argentina,XLM,AllPositive,SG17,HWSD,Decrease
+NevaR,13,17,13017,EU-15,EUR,AllPositive,HWSD,FAO,Decrease
+ObR,11,56,11056,China,CHN,AllPositive,SG17,SG20,Decrease
+PapuaCst,29,173,29173,Southeast Asia,XAS,AllPositive,FAO,Houghton,Decrease
+ParnaibaR,7,187,7187,Brazil,BRA,AllPositive,SG17,HWSD,Decrease
+Phlppns,29,119,29119,Southeast Asia,XAS,AllPositive,SG17,HWSD,Decrease
+RhineR,13,32,13032,EU-15,EUR,AllPositive,SG17,HWSD,Decrease
+RhoneR,13,62,13062,EU-15,EUR,AllPositive,SG17,HWSD,Decrease
+RioGrande,20,231,20231,Mexico,XLM,AllPositive,FAO,SG17,Decrease
+RioLaPlata,31,206,31206,Argentina,XLM,AllPositive,Houghton,SG20,Decrease
+RioLaPlata,26,206,26206,South America_Southern,XLM,AllPositive,Houghton,FAO,Decrease
+RusCstSE,29,37,29037,Southeast Asia,XAS,AllPositive,FAO,SG20,Decrease
+Salween,11,127,11127,China,CHN,AllPositive,Houghton,SG17,Decrease
+SAmerCstN,9,143,9143,Central America and Caribbean,XLM,AllPositive,SG17,FAO,Decrease
+SAmerCstNE,7,161,7161,Brazil,BRA,AllPositive,SG20,FAO,Decrease
+SChinaSea,29,112,29112,Southeast Asia,XAS,AllPositive,SG17,FAO,Decrease
+ScndnvN,16,8,16008,European Free Trade Association,ROW,AllPositive,HWSD,Houghton,Decrease
+SepikR,18,178,18178,Indonesia,XAS,AllPositive,FAO,HWSD,Decrease
+SepikR,29,178,29178,Southeast Asia,XAS,AllPositive,FAO,Houghton,Decrease
+Sulawesi,18,164,18164,Indonesia,XAS,AllPositive,FAO,HWSD,Decrease
+Sweden,13,12,13012,EU-15,EUR,AllPositive,HWSD,FAO,Decrease
+Tarim,10,85,10085,Central Asia,XAS,AllPositive,HWSD,Houghton,Decrease
+Tasmania,6,211,6211,Australia_NZ,XAS,AllPositive,FAO,SG17,Decrease
+Tibet,11,92,11092,China,CHN,AllPositive,SG20,SG17,Decrease
+TigrEuphR,15,84,15084,Europe_Non_EU,ROW,AllPositive,Houghton,HWSD,Decrease
+TocantinsR,7,174,7174,Brazil,BRA,AllPositive,HWSD,FAO,Decrease
+UralR,10,38,10038,Central Asia,XAS,AllPositive,Houghton,HWSD,Decrease
+UsaColoRS,20,221,20221,Mexico,XLM,AllPositive,HWSD,SG17,Decrease
+UsaCstNE,1,232,1232,USA,USA,AllPositive,SG17,Houghton,Decrease
+XunJiang,11,108,11108,China,CHN,AllPositive,SG17,Houghton,Decrease
+YucatanP,9,111,9111,Central America and Caribbean,XLM,AllPositive,SG17,Houghton,Decrease
+YucatanP,20,111,20111,Mexico,XLM,AllPositive,HWSD,Houghton,Decrease
+AfrCstSSW,24,204,24204,South Africa,AFR,AllNegative,Houghton,SG20,Increase
+AmurR,10,43,10043,Central Asia,XAS,AllNegative,Houghton,HWSD,Increase
+BalticSea,23,20,23020,Russia,ROW,AllNegative,HWSD,SG20,Increase
+BlackSeaS,10,70,10070,Central Asia,XAS,AllNegative,SG17,Houghton,Increase
+California,1,217,1217,USA,USA,AllNegative,SG20,SG17,Increase
+ChileCstS,31,169,31169,Argentina,XLM,AllNegative,HWSD,SG17,Increase
+EbroR,13,73,13073,EU-15,EUR,AllNegative,SG20,FAO,Increase
+Gobi,10,42,10042,Central Asia,XAS,AllNegative,SG17,Houghton,Increase
+GuadalqR,13,83,13083,EU-15,EUR,AllNegative,SG17,HWSD,Increase
+GuadianaR,13,81,13081,EU-15,EUR,AllNegative,SG17,HWSD,Increase
+IndusR,22,89,22089,Pakistan,XAS,AllNegative,HWSD,Houghton,Increase
+Iran,21,82,21082,Middle East,ROW,AllNegative,SG17,Houghton,Increase
+LimpopoR,24,199,24199,South Africa,AFR,AllNegative,Houghton,HWSD,Increase
+LenaR,23,6,23006,Russia,ROW,AllNegative,Houghton,SG17,Increase
+OderR,12,29,12029,EU-12,EUR,AllNegative,HWSD,SG20,Increase
+PacArctic,8,7,8007,Canada,ROW,AllNegative,SG17,SG20,Increase
+PacArctic,1,7,1007,USA,USA,AllNegative,SG17,Houghton,Increase
+PersianGulf,21,88,21088,Middle East,ROW,AllNegative,SG17,Houghton,Increase
+PolandCst,12,33,12033,EU-12,EUR,AllNegative,Houghton,SG20,Increase
+PolandCst,23,33,23033,Russia,ROW,AllNegative,HWSD,SG17,Increase
+TagusR,13,71,13071,EU-15,EUR,AllNegative,SG17,HWSD,Increase
+TexasCst,1,225,1225,USA,USA,AllNegative,SG17,FAO,Increase
+TiberR,13,69,13069,EU-15,EUR,AllNegative,SG17,HWSD,Increase
+UsaColoRN,1,220,1220,USA,USA,AllNegative,SG20,Houghton,Increase
+UsaPacNW,1,229,1229,USA,USA,AllNegative,SG17,Houghton,Increase
+WislaR,14,30,14030,Europe_Eastern,ROW,AllNegative,SG17,SG20,Increase
+YeniseiR,10,48,10048,Central Asia,XAS,AllNegative,Houghton,SG17,Increase
+YeniseiR,23,48,23048,Russia,ROW,AllNegative,SG17,SG20,Increase
+AfrCstNE,2,100,2100,Africa_Eastern,AFR,AllPositive,FAO,HWSD,Increase
+AfrIntN,5,144,5144,Africa_Western,AFR,AllPositive,HWSD,FAO,Increase
+AmazonR,32,168,32168,Colombia,XLM,AllPositive,SG17,FAO,Increase
+BengalBay,27,116,27116,South Asia,XAS,AllPositive,SG17,SG20,Increase
+BorneoCstN,29,159,29159,Southeast Asia,XAS,AllPositive,SG17,SG20,Increase
+ElbeR,13,31,13031,EU-15,EUR,AllPositive,SG17,SG20,Increase
+EmsWeserR,13,28,13028,EU-15,EUR,AllPositive,HWSD,Houghton,Increase
+GreatLakes,1,227,1227,USA,USA,AllPositive,SG17,SG20,Increase
+ShebJubR,2,170,2170,Africa_Eastern,AFR,AllPositive,Houghton,FAO,Increase
+Kalimantan,18,165,18165,Indonesia,XAS,AllPositive,SG17,Houghton,Increase
+MarChiq,31,203,31203,Argentina,XLM,AllPositive,SG17,SG20,Increase
+OrinocoR,32,156,32156,Colombia,XLM,AllPositive,SG17,HWSD,Increase
+RioBalsas,20,134,20134,Mexico,XLM,AllPositive,Houghton,HWSD,Increase
+SAmerCstN,32,143,32143,Colombia,XLM,AllPositive,HWSD,SG17,Increase
+UsaColoRS,1,221,1221,USA,USA,AllNegative,HWSD,SG20,Increase
+AmazonR,26,168,26168,South America_Southern,XLM,AllPositive,SG17,SG20,Decrease
+DanubeR,14,54,14054,Europe_Eastern,ROW,AllPositive,HWSD,SG20,PeakSteady
+DanubeR,15,54,15054,Europe_Non_EU,ROW,AllPositive,SG17,Houghton,PeakSteady
+DaugavaR,14,25,14025,Europe_Eastern,ROW,AllPositive,SG17,SG20,PeakSteady
+DnieperR,14,39,14039,Europe_Eastern,ROW,AllPositive,HWSD,Houghton,PeakSteady
+DnieperR,23,39,23039,Russia,ROW,AllPositive,FAO,Houghton,PeakSteady
+ElbeR,12,31,12031,EU-12,EUR,AllPositive,SG17,SG20,PeakSteady
+FranceCstW,13,41,13041,EU-15,EUR,AllPositive,SG17,FAO,PeakSteady
+LoireR,13,44,13044,EU-15,EUR,AllPositive,SG17,HWSD,PeakSteady
+SeineR,13,46,13046,EU-15,EUR,AllPositive,SG17,HWSD,PeakSteady
+UsaCstNE,8,232,8232,Canada,ROW,AllPositive,SG17,SG20,PeakSteady
+UsaCstSE,1,226,1226,USA,USA,AllPositive,SG17,Houghton,PeakSteady
+UsaPacNW,8,229,8229,Canada,ROW,AllPositive,SG20,HWSD,PeakSteady
+VolgaR,23,18,23018,Russia,ROW,AllPositive,SG17,Houghton,PeakSteady
+CaspianE,27,52,27052,South Asia,XAS,AllPositive,Houghton,FAO,Spike
+FarahrudR,27,90,27090,South Asia,XAS,AllPositive,Houghton,SG20,Spike
+HamuMashR,27,102,27102,South Asia,XAS,AllPositive,Houghton,SG20,Spike
+Helmand,27,97,27097,South Asia,XAS,AllPositive,Houghton,SG17,Spike
+IndusR,27,89,27089,South Asia,XAS,AllPositive,Houghton,FAO,Spike
+BengalBay,29,116,29116,Southeast Asia,XAS,AllPositive,SG17,Houghton,PeakSteady
+Caribbean,9,101,9101,Central America and Caribbean,XLM,AllPositive,SG17,FAO,PeakSteady
+ColEcuaCst,32,157,32157,Colombia,XLM,AllPositive,FAO,SG20,PeakSteady
+GrijUsuR,20,133,20133,Mexico,XLM,AllPositive,SG17,HWSD,PeakSteady
+MexCstW,20,115,20115,Mexico,XLM,AllPositive,Houghton,HWSD,PeakSteady
+MexGulf,20,105,20105,Mexico,XLM,AllPositive,Houghton,SG20,PeakSteady
+Papaloapan,20,130,20130,Mexico,XLM,AllPositive,Houghton,FAO,PeakSteady
+RioLerma,20,131,20131,Mexico,XLM,AllPositive,HWSD,SG20,PeakSteady
+Tehuantpc,20,136,20136,Mexico,XLM,AllPositive,Houghton,HWSD,PeakSteady
+DnkGrmCst,13,21,13021,EU-15,EUR,AllPositive,FAO,SG20,PeakSteady
+Madagascar,2,177,2177,Africa_Eastern,AFR,AllNegative,Houghton,SG17,StepDown
+AfrCstE,2,171,2171,Africa_Eastern,AFR,AllPositive,Houghton,SG17,StepDown
+AfrCstE,4,171,4171,Africa_Southern,AFR,AllPositive,HWSD,SG20,StepDown
+AfrCstSE,4,190,4190,Africa_Southern,AFR,AllPositive,HWSD,Houghton,StepDown
+AfrCstW,5,142,5142,Africa_Western,AFR,AllPositive,SG17,HWSD,StepDown
+CongoR,4,183,4183,Africa_Southern,AFR,AllPositive,HWSD,SG20,StepDown
+CongoR,5,183,5183,Africa_Western,AFR,AllPositive,SG17,HWSD,StepDown
+GuineaGulf,5,162,5162,Africa_Western,AFR,AllPositive,SG17,HWSD,StepDown
+LChad,5,151,5151,Africa_Western,AFR,AllPositive,Houghton,SG17,StepDown
+LimpopoR,4,199,4199,Africa_Southern,AFR,AllPositive,SG20,Houghton,StepDown
+AusCstW,6,191,6191,Australia_NZ,XAS,AllPositive,SG20,SG17,StepDown
+BengalW,17,118,17118,India,XAS,AllPositive,Houghton,FAO,StepDown
+BrahmaniR,17,120,17120,India,XAS,AllPositive,Houghton,HWSD,StepDown
+BrzCstE,7,186,7186,Brazil,BRA,AllPositive,Houghton,SG17,StepDown
+ChaoPhrR,29,146,29146,Southeast Asia,XAS,AllPositive,SG17,HWSD,StepDown
+ColEcuaCst,26,157,26157,South America_Southern,XLM,AllPositive,HWSD,FAO,StepDown
+NigerR,5,149,5149,Africa_Western,AFR,AllPositive,HWSD,SG17,StepDown
+NileR,2,87,2087,Africa_Eastern,AFR,AllPositive,Houghton,SG17,StepDown
+NileR,5,87,5087,Africa_Western,AFR,AllPositive,SG20,HWSD,StepDown
+RiftValley,4,179,4179,Africa_Southern,AFR,AllPositive,SG17,HWSD,StepDown
+GangesR,27,110,27110,South Asia,XAS,AllPositive,SG17,HWSD,StepDown
+VoltaR,5,160,5160,Africa_Western,AFR,AllPositive,Houghton,HWSD,StepDown
+ZambeziR,4,188,4188,Africa_Southern,AFR,AllPositive,SG17,Houghton,StepDown
+MalaysiaP,29,139,29139,Southeast Asia,XAS,AllPositive,FAO,HWSD,StepDown
+SenegalR,5,152,5152,Africa_Western,AFR,AllPositive,Houghton,SG17,StepDown
+MeditE,21,75,21075,Middle East,ROW,AllPositive,Houghton,FAO,StepDown
+OrinocoR,25,156,25156,South America_Northern,XLM,AllPositive,Houghton,HWSD,StepDown
+RioLaPlata,7,206,7206,Brazil,BRA,AllPositive,SG17,SG20,StepDown
+Salween,29,127,29127,Southeast Asia,XAS,AllPositive,SG17,HWSD,StepDown
+SAmerCstN,25,143,25143,South America_Northern,XLM,AllPositive,HWSD,SG20,StepDown
+SAmerCstNE,25,161,25161,South America_Northern,XLM,AllPositive,HWSD,SG17,StepDown
+SaoFrancR,7,192,7192,Brazil,BRA,AllPositive,SG17,HWSD,StepDown
+SittaungR,29,138,29138,Southeast Asia,XAS,AllPositive,SG17,HWSD,StepDown
+ThaiGulf,29,148,29148,Southeast Asia,XAS,AllPositive,SG17,HWSD,StepDown
+UsaCstE,1,233,1233,USA,USA,AllPositive,SG17,FAO,StepDown
+VietnamCst,29,126,29126,Southeast Asia,XAS,AllPositive,SG17,HWSD,StepDown
+BengalBay,17,116,17116,India,XAS,AllPositive,SG17,FAO,Trough
+Scotland,13,16,13016,EU-15,EUR,AllPositive,SG20,SG17,Trough
+BlackSeaN,10,47,10047,Central Asia,XAS,Zero,,,
+BoHai,29,66,29066,Southeast Asia,XAS,Complex,SG17,HWSD,
+CaspianSW,15,72,15072,Europe_Non_EU,ROW,Zero,,,
+FranceCstS,13,61,13061,EU-15,EUR,Zero,,,
+Helmand,22,97,22097,Pakistan,XAS,Zero,,,
+MeditE,12,75,12075,EU-12,EUR,Zero,,,
+NewCaledn,29,185,29185,Southeast Asia,XAS,Zero,,,
+ObR,10,56,10056,Central Asia,XAS,Complex,Houghton,FAO,
+OderR,13,29,13029,EU-15,EUR,Zero,,,
+RhineR,16,32,16032,European Free Trade Association,ROW,Zero,,,
+RioGrande,1,231,1231,USA,USA,Zero,,,
+SriLanka,27,154,27154,South Asia,XAS,Complex,FAO,HWSD,
+Sumatra,18,163,18163,Indonesia,XAS,Complex,FAO,Houghton,
+XunJiang,29,108,29108,Southeast Asia,XAS,Zero,,,
+AdrBlkSea,13,55,13055,EU-15,EUR,Complex,SG17,HWSD,
+AmuDaryaR,10,58,10058,Central Asia,XAS,Complex,FAO,SG17,
+AmuDaryaR,27,58,27058,South Asia,XAS,Complex,Houghton,SG17,
+AmurR,11,43,11043,China,CHN,Complex,HWSD,SG17,
+AmurR,23,43,23043,Russia,ROW,Complex,SG17,Houghton,
+ArabianP,21,94,21094,Middle East,ROW,Complex,Houghton,HWSD,
+ArabianSea,22,104,22104,Pakistan,XAS,Complex,Houghton,SG20,
+ArcticIsl,13,1,13001,EU-15,EUR,Complex,FAO,Houghton,
+ArgCstN,31,210,31210,Argentina,XLM,Complex,Houghton,FAO,
+ArgCstS,31,215,31215,Argentina,XLM,Complex,Houghton,HWSD,
+ArkWhtRedR,1,224,1224,USA,USA,Complex,Houghton,FAO,
+AusCstE,6,189,6189,Australia_NZ,XAS,Complex,Houghton,SG17,
+AusCstN,6,184,6184,Australia_NZ,XAS,Complex,Houghton,SG20,
+AusInt,6,193,6193,Australia_NZ,XAS,Complex,SG17,Houghton,
+BarentsSea,23,9,23009,Russia,ROW,Complex,SG17,HWSD,
+BlackSeaN,23,47,23047,Russia,ROW,Complex,SG17,Houghton,
+BlackSeaS,15,70,15070,Europe_Non_EU,ROW,Complex,Houghton,HWSD,
+CanAtl,8,19,8019,Canada,ROW,Complex,SG17,SG20,
+CaspianE,10,52,10052,Central Asia,XAS,Complex,SG20,Houghton,
+CaspianE,21,52,21052,Middle East,ROW,Complex,SG17,HWSD,
+CaspianNE,23,45,23045,Russia,ROW,Complex,SG17,FAO,
+CaspianSW,21,72,21072,Middle East,ROW,Complex,Houghton,FAO,
+CauveryR,17,153,17153,India,XAS,Complex,SG17,HWSD,
+DaugavaR,12,25,12025,EU-12,EUR,Complex,SG17,SG20,
+DaugavaR,23,25,23025,Russia,ROW,Complex,SG17,SG20,
+DeadSea,21,95,21095,Middle East,ROW,Complex,Houghton,HWSD,
+DniesterR,14,49,14049,Europe_Eastern,ROW,Complex,HWSD,SG20,
+DonR,14,53,14053,Europe_Eastern,ROW,Complex,SG17,Houghton,
+DonR,23,53,23053,Russia,ROW,Complex,SG17,Houghton,
+DouroR,13,74,13074,EU-15,EUR,Complex,HWSD,FAO,
+DvinaRN,23,14,23014,Russia,ROW,Complex,FAO,SG17,
+EngWales,13,26,13026,EU-15,EUR,Complex,SG17,SG20,
+Finland,13,13,13013,EU-15,EUR,Complex,HWSD,SG20,
+GodavariR,17,123,17123,India,XAS,Complex,SG17,FAO,
+GreatLakes,8,227,8227,Canada,ROW,Complex,HWSD,SG17,
+Hainan,11,124,11124,China,CHN,Complex,SG17,SG20,
+HamuMashR,22,102,22102,Pakistan,XAS,Complex,HWSD,Houghton,
+HuangHeR,11,79,11079,China,CHN,Complex,Houghton,SG20,
+HudsonBay,8,15,8015,Canada,ROW,Complex,SG17,SG20,
+Iceland,16,11,16011,European Free Trade Association,ROW,Complex,Houghton,HWSD,
+IndCstE,17,145,17145,India,XAS,Complex,SG17,HWSD,
+IndCstS,17,155,17155,India,XAS,Complex,SG17,HWSD,
+ItalyCstE,13,50,13050,EU-15,EUR,Complex,SG17,HWSD,
+ItalyCstW,13,59,13059,EU-15,EUR,Complex,SG17,Houghton,
+Japan,19,51,19051,Japan,XAS,Complex,SG17,SG20,
+JavaTimor,29,175,29175,Southeast Asia,XAS,Complex,Houghton,SG17,
+KaraSea,23,5,23005,Russia,ROW,Complex,HWSD,FAO,
+Korea,29,65,29065,Southeast Asia,XAS,Complex,FAO,HWSD,
+KrishnaR,17,140,17140,India,XAS,Complex,SG17,HWSD,
+LBalkash,10,68,10068,Central Asia,XAS,Complex,SG17,SG20,
+AfrCstS,24,198,24198,South Africa,AFR,Complex,Houghton,FAO,
+NileR,4,87,4087,Africa_Southern,AFR,Complex,SG20,HWSD,
+OrangeR,24,194,24194,South Africa,AFR,Complex,Houghton,FAO,
+Mackenzie,8,10,8010,Canada,ROW,Complex,HWSD,SG20,
+RiftValley,2,179,2179,Africa_Eastern,AFR,Complex,Houghton,SG17,
+MeditIsl,13,63,13063,EU-15,EUR,Complex,SG17,SG20,
+MexBaja,20,91,20091,Mexico,XLM,Complex,HWSD,FAO,
+MexCstNW,20,96,20096,Mexico,XLM,Complex,SG17,Houghton,
+MissouriR,1,223,1223,USA,USA,Complex,Houghton,FAO,
+MissppRN,1,218,1218,USA,USA,Complex,Houghton,FAO,
+MissppRS,1,219,1219,USA,USA,Complex,SG17,HWSD,
+MurrayDrlg,6,208,6208,Australia_NZ,XAS,Complex,Houghton,SG17,
+NarvaR,12,22,12022,EU-12,EUR,Complex,HWSD,SG20,
+NarvaR,23,22,23022,Russia,ROW,Complex,HWSD,FAO,
+NelsonR,8,23,8023,Canada,ROW,Complex,HWSD,SG20,
+NemanR,12,35,12035,EU-12,EUR,Complex,Houghton,SG20,
+NemanR,14,35,14035,Europe_Eastern,ROW,Complex,HWSD,SG20,
+NevaR,23,17,23017,Russia,ROW,Complex,Houghton,HWSD,
+NewZealand,6,201,6201,Australia_NZ,XAS,Complex,SG17,HWSD,
+NWTerr,8,2,8002,Canada,ROW,Complex,Houghton,HWSD,
+ObR,23,56,23056,Russia,ROW,Complex,HWSD,Houghton,
+OhioR,1,228,1228,USA,USA,Complex,Houghton,FAO,
+Pampas,31,209,31209,Argentina,XLM,Complex,Houghton,SG20,
+PennarR,17,147,17147,India,XAS,Complex,Houghton,FAO,
+PeruCst,26,180,26180,South America_Southern,XLM,Complex,SG17,Houghton,
+PoR,13,57,13057,EU-15,EUR,Complex,SG17,SG20,
+RedSeaE,21,93,21093,Middle East,ROW,Complex,FAO,Houghton,
+RioVerde,20,132,20132,Mexico,XLM,Complex,HWSD,SG20,
+RusCstSE,11,37,11037,China,CHN,Complex,SG17,HWSD,
+RusCstSE,23,37,23037,Russia,ROW,Complex,SG17,HWSD,
+SabarmatiR,17,107,17107,India,XAS,Complex,FAO,SG17,
+SabarmatiR,22,107,22107,Pakistan,XAS,Complex,FAO,HWSD,
+Salinas,31,205,31205,Argentina,XLM,Complex,Houghton,FAO,
+SChinaSea,11,112,11112,China,CHN,Complex,HWSD,FAO,
+ScndnvN,23,8,23008,Russia,ROW,Complex,HWSD,SG20,
+SiberiaN,23,3,23003,Russia,ROW,Complex,Houghton,SG17,
+SiberiaW,23,4,23004,Russia,ROW,Complex,Houghton,HWSD,
+SpainCstSE,13,67,13067,EU-15,EUR,Complex,FAO,Houghton,
+StLwrncR,8,40,8040,Canada,ROW,Complex,SG17,SG20,
+SyrDaryaR,10,76,10076,Central Asia,XAS,Complex,Houghton,SG20,
+TaptiR,17,117,17117,India,XAS,Complex,SG17,FAO,
+Tarim,11,85,11085,China,CHN,Complex,SG17,Houghton,
+TennR,1,230,1230,USA,USA,Complex,SG17,FAO,
+TigrEuphR,21,84,21084,Middle East,ROW,Complex,SG17,FAO,
+UralR,23,38,23038,Russia,ROW,Complex,FAO,Houghton,
+WislaR,12,30,12030,EU-12,EUR,Complex,HWSD,SG20,
+Yangtze,11,106,11106,China,CHN,Complex,Houghton,SG20,
+ZiyaHe,11,77,11077,China,CHN,Complex,FAO,HWSD,
+AdnNicIsl,17,141,17141,India,XAS,Zero,,,
+AfrIntN,2,144,2144,Africa_Eastern,AFR,Zero,,,
+AfrCstNE,21,100,21100,Middle East,ROW,Zero,,,
+AfrCstNW,13,86,13086,EU-15,EUR,Zero,,,
+AmuDaryaR,11,58,11058,China,CHN,Zero,,,
+AmuDaryaR,22,58,22058,Pakistan,XAS,Zero,,,
+ArabianSea,21,104,21104,Middle East,ROW,Zero,,,
+ArcticIsl,16,1,16001,European Free Trade Association,ROW,Zero,,,
+ArcticIsl,23,1,23001,Russia,ROW,Zero,,,
+ArgColoR,26,212,26212,South America_Southern,XLM,Zero,,,
+ArgCstS,13,215,13215,EU-15,EUR,Zero,,,
+ArgCstS,26,215,26215,South America_Southern,XLM,Zero,,,
+AusCstS,6,202,6202,Australia_NZ,XAS,Zero,,,
+BlackSeaS,23,70,23070,Russia,ROW,Zero,,,
+BorneoCstN,18,159,18159,Indonesia,XAS,Zero,,,
+BrzCstS,26,195,26195,South America_Southern,XLM,Zero,,,
+California,20,217,20217,Mexico,XLM,Zero,,,
+Caribbean,1,101,1101,USA,USA,Zero,,,
+CaspianSW,23,72,23072,Russia,ROW,Zero,,,
+ChileCstN,31,207,31207,Argentina,XLM,Zero,,,
+ChileCstN,26,207,26207,South America_Southern,XLM,Zero,,,
+ChinaCst,30,78,30078,Taiwan,XAS,Zero,,,
+ChurchillR,8,34,8034,Canada,ROW,Zero,,,
+CntAmer,20,135,20135,Mexico,XLM,Zero,,,
+DanubeR,16,54,16054,European Free Trade Association,ROW,Zero,,,
+DniesterR,12,49,12049,EU-12,EUR,Zero,,,
+DnkGrmCst,12,21,12021,EU-12,EUR,Zero,,,
+EJrdnSyr,15,99,15099,Europe_Non_EU,ROW,Zero,,,
+EJrdnSyr,21,99,21099,Middle East,ROW,Zero,,,
+FarahrudR,21,90,21090,Middle East,ROW,Zero,,,
+Finland,23,13,23013,Russia,ROW,Zero,,,
+FlyR,18,181,18181,Indonesia,XAS,Zero,,,
+FraserR,1,27,1027,USA,USA,Zero,,,
+GangesR,11,110,11110,China,CHN,Zero,,,
+GangesR,29,110,29110,Southeast Asia,XAS,Zero,,,
+Gobi,23,42,23042,Russia,ROW,Zero,,,
+GreatBasin,1,222,1222,USA,USA,Zero,,,
+HamuMashR,21,102,21102,Middle East,ROW,Zero,,,
+Hawaii,1,234,1234,USA,USA,Zero,,,
+Helmand,21,97,21097,Middle East,ROW,Zero,,,
+IberiaCst,13,60,13060,EU-15,EUR,Zero,,,
+IdnE,29,158,29158,Southeast Asia,XAS,Zero,,,
+IndusR,11,89,11089,China,CHN,Zero,,,
+Kalimantan,29,165,29165,Southeast Asia,XAS,Zero,,,
+LaPuna,31,200,31200,Argentina,XLM,Zero,,,
+LaPuna,26,200,26200,South America_Southern,XLM,Zero,,,
+LBalkash,11,68,11068,China,CHN,Zero,,,
+MagdalenaR,25,166,25166,South America_Northern,XLM,Zero,,,
+MahiR,17,113,17113,India,XAS,Zero,,,
+MeditE,13,75,13075,EU-15,EUR,Zero,,,
+AfrCstNE,3,100,3100,Africa_Northern,AFR,Zero,,,
+MexCstNW,1,96,1096,USA,USA,Zero,,,
+MissouriR,8,223,8223,Canada,ROW,Zero,,,
+NegroR,26,213,26213,South America_Southern,XLM,Zero,,,
+NelsonR,1,23,1023,USA,USA,Zero,,,
+NemanR,23,35,23035,Russia,ROW,Zero,,,
+NevaR,14,17,14017,Europe_Eastern,ROW,Zero,,,
+AfrCstNW,3,86,3086,Africa_Northern,AFR,Zero,,,
+AfrCstNW,5,86,5086,Africa_Western,AFR,Zero,,,
+AfrCstS,4,198,4198,Africa_Southern,AFR,Zero,,,
+AfrCstSW,4,196,4196,Africa_Southern,AFR,Zero,,,
+AfrCstSW,24,196,24196,South Africa,AFR,Zero,,,
+CongoR,2,183,2183,Africa_Eastern,AFR,Zero,,,
+DeadSea,3,95,3095,Africa_Northern,AFR,Zero,,,
+GuineaGulf,4,162,4162,Africa_Southern,AFR,Zero,,,
+OrinocoR,7,156,7156,Brazil,BRA,Zero,,,
+Patagonia,31,214,31214,Argentina,XLM,Zero,,,
+PoR,16,57,16057,European Free Trade Association,ROW,Zero,,,
+RhoneR,16,62,16062,European Free Trade Association,ROW,Zero,,,
+LChad,2,151,2151,Africa_Eastern,AFR,Zero,,,
+LChad,3,151,3151,Africa_Northern,AFR,Zero,,,
+Salinas,26,205,26205,South America_Southern,XLM,Zero,,,
+ScheldtR,13,36,13036,EU-15,EUR,Zero,,,
+ScndnvN,13,8,13008,EU-15,EUR,Zero,,,
+MeditE,3,75,3075,Africa_Northern,AFR,Zero,,,
+NigerR,3,149,3149,Africa_Northern,AFR,Zero,,,
+NileR,3,87,3087,Africa_Northern,AFR,Zero,,,
+SinaiP,21,98,21098,Middle East,ROW,Zero,,,
+SolomonIsl,29,176,29176,Southeast Asia,XAS,Zero,,,
+Sweden,16,12,16012,European Free Trade Association,ROW,Zero,,,
+SyrDaryaR,11,76,11076,China,CHN,Zero,,,
+SyrDaryaR,23,76,23076,Russia,ROW,Zero,,,
+Taiwan,19,103,19103,Japan,XAS,Zero,,,
+Taiwan,30,103,30103,Taiwan,XAS,Zero,,,
+Tarim,22,85,22085,Pakistan,XAS,Zero,,,
+VolgaR,10,18,10018,Central Asia,XAS,Zero,,,
+OrangeR,4,194,4194,Africa_Southern,AFR,Zero,,,
+SinaiP,3,98,3098,Africa_Northern,AFR,Zero,,,
+ZambeziR,5,188,5188,Africa_Western,AFR,Zero,,,
