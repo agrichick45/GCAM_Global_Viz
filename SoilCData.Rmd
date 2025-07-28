@@ -1,0 +1,120 @@
+---
+title: "SoilCarbonGCAM"
+output: html_document
+date: "2023-08-07"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Notes** 
+
+This file was superceded by others.... 
+
+```{r}
+#load the required packages
+library(tidyverse)
+library(easyr)
+```
+
+```{r}
+#Bring in the Missouri River Gas Emissions File First
+
+Missouri_Emissions <- read_csv("C:/Users/aliesch/OneDrive - Environmental Protection Agency (EPA)/Desktop/MissouriGCAM/Missouri_Emissions.csv")
+View(Missouri_Emissions)
+
+#Remove Excess Columns
+MissEmiss <- Missouri_Emissions %>% select(-c(Model, scenario, riverBasin, Variable, Unit, model_run_date, script_run_date, comments))
+
+
+
+#Sum Everything in each Series together to get Total Emissions
+df3 <- sumnum(group_by(MissEmiss, series, run), except = c('series'))
+
+df3$series<-as.character(df3$series)
+
+df4<-filter(df3, series != 69 & series != 90)
+
+pivotlines<-df4 %>%
+    pivot_longer(
+        cols = 3:53, names_to = "year", values_to = "reference_emissions")
+
+
+
+
+ggplot(data=subset(pivotlines), 
+       aes(x=year, y=reference_emissions, group = run))+
+    geom_line(aes(color=run), size=1)+
+  ggtitle("Missouri River Emissions: GCAM Simulations") +
+  xlab("Year") + 
+  ylab("Reference Emissions (Mt CO2eq/yr)")+
+  scale_x_discrete(breaks = c(2010, 2020, 2030, 2040, 2050, 2060))
+
+all_numeric_sums <- df3 %>%
+  mutate(TotalSums = rowSums(select(., where(is.numeric))))
+
+
+```
+
+
+```{r}
+#Bring in the baseline dataset (Moirai - SG2017, Series 69)
+s69<-read_csv('s69.csv')
+
+#delineate the Variable columns by |
+
+delim<-separate_wider_delim(s69, col=Variable, "|", names = c("Emissions", "Gas", "LUC", "Type"))
+
+#drop excess columns
+df2 <- delim %>% select(-c(Model, Emissions, Gas, LUC, Unit, model_run_date, script_run_date, comments))
+
+#Filter to Ref
+totalRef<-filter(df2, scenario == "REF" & Type == 'Total')
+
+
+#sum by region
+df3 <- sumnum( group_by(totalRef, region, series, run), except = c('series'))
+
+#Get everyting in a graphable format
+pivotlines<-df3 %>%
+    pivot_longer(
+        cols = 4:54, names_to = "year", values_to = "reference_emissions")
+
+write.csv(df3, "regionbaseline.csv")
+
+timeset<-ggplot(data=subset(pivotlines, region == "WLD"), 
+       aes(x=year, y=reference_emissions, group = 1))+geom_line()
+
+
+timeset + stat_smooth(
+  method = "gam"
+  )
+
+
+ggplot(data=subset(pivotlines, !region == "WLD"), 
+       aes(x=year, y=reference_emissions, group = region))+geom_line()
+
+
+#sum by basin
+df4 <- sumnum( group_by(totalRef, riverBasin, series, run), except = c('series'))
+
+write.csv(df4, "basinbaseline.csv")
+
+pivotlinesRB<-df4 %>%
+    pivot_longer(
+        cols = 4:54, names_to = "year", values_to = "reference_emissions")
+
+ggplot(data=subset(pivotlinesRB, riverBasin == "MissouriR"), 
+       aes(x=year, y=reference_emissions, group = riverBasin))+geom_line()
+
+#Bring in Series 84-90 (using s#_luc_annual_by_basin.csv output)
+
+#Merge all datasets together
+
+#Save a huge dataset
+
+#Keep Only the Reference Sections
+
+#Plot the Annual Emissions of the World (TOTAL of all of the runs)
+```

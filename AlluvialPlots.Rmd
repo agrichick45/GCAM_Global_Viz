@@ -1,0 +1,59 @@
+---
+title: "Alluvial Plots"
+author: "Mandy Liesch"
+date: "2025-03-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 
+
+```{r}
+# package for data cleaning and graphs
+library(tidyverse)
+# package for alluvial plots
+library(ggalluvial)
+# optional
+# nice themes
+library(ggthemes)
+# nice colors
+library(viridis)
+
+library(networkD3)
+
+USABasins<-read_csv("USABasins.csv")
+
+USAWide<-USABasins %>%
+  pivot_wider(names_from = Variable, values_from = Dif) %>%
+  mutate(Shrubland= coalesce(Shrubland, 0)) %>%
+  select (-c(OtherNotArable)) %>%
+  mutate(Forest= Managed_Forest + Unmanaged_Forest) %>%
+  mutate(Crop= Cropland + OtherArable) %>%
+  mutate(Pasture = Managed_Pasture + Unmanaged_Pasture) %>%
+  select(-c(Unmanaged_Pasture, Managed_Pasture, OtherArable, Cropland, Managed_Forest, Unmanaged_Forest)
+
+
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodes <- data.frame(
+  name=c(as.character(links$source), 
+         as.character(links$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+ 
+p <- sankeyNetwork(Links = links, Nodes = nodes,
+                   Source = "IDsource", Target = "IDtarget",
+                   Value = "value", NodeID = "name", 
+                   #sinksRight=FALSE,
+                   fontSize = 12, fontFamily = "Arial Black")
+# View
+p
