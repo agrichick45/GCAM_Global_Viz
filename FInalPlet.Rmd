@@ -1,0 +1,115 @@
+---
+title: "Global Basin Visualizations"
+output: html_document
+date: "2025-07-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Color Schemes
+
+```{r}
+# Add the color schemes for land use and models
+LUColors <- c("UrbanLand"="#C80813FF", "Tundra"="#71D0F5FF", 
+              "Rock/Ice/Desert"="#8A9197FF", "Cropland" = "#FED439FF",
+              "HarvCropLand"="#FED439FF", "OtherArableLand" = "#D2AF81FF", 
+              "Pasture"= "#FD8CC1FF", "UnmanagedPasture"="#370335FF", 
+              "Grassland" = "#46732EFF", "Forest" = "#075149FF", 
+              "Shrubland" = "#F05C3BFF", "otherNotArable"="#8A9197FF")
+
+# Vegetative Based Color Pallet
+vegCEmissions<-c("#46732EFF")
+
+# GCAM soil models
+ModelColors<- c("FAO"="#370335FF", "Houghton" = "#FED439FF", 
+                "GCAM" = "#FED439FF", "HWSD"="#1A9993FF", "SG17" = "#197EC0FF",
+                "SG20"="#F05C3BFF")
+
+
+
+```
+
+## Load the Files
+
+```{r}
+#Load the required packages
+library(tidyverse)
+library(terra)
+library(tidyterra)
+
+#Load the map vector file 
+map<-vect('reg_basin_boundaries_moirai_landcells_3p1_0p5arcmin.shp')
+
+#Load the Categories file
+categories<-read.csv("categories.csv")
+
+```
+
+```{r}
+#Merge the Map Files to the categorical file
+cat_plet_file<-merge(map, categories, by="key") 
+
+cat_plet_rename<-cat_plet_file %>%
+  rename( Basin = basin_nm, Region = reg_nm ) 
+
+cat_plet <- cat_plet_rename %>%
+  select( -basin_id, -reg_id)
+```
+
+## Percentage Land Use Change
+
+```{r}
+
+plet(cat_plet, "Land.Use.Percent.Category", tiles="Streets", wrap=FALSE, split=TRUE)
+
+```
+
+## Land Use Category 
+
+```{r}
+
+plet(cat_plet, "Land.Use.Category", tiles="Streets", wrap=FALSE, split=TRUE)
+```
+
+## Land Use Change Type
+
+```{r}
+
+plet(cat_plet, "Land.Use.Change.Type", tiles="Streets", wrap=FALSE, split=TRUE)
+
+```
+
+## Emission Type
+
+```{r}
+
+plet(cat_plet, "Emission.Type", tiles="Streets", wrap=FALSE, split=TRUE)
+
+```
+
+## Emission Trajectory
+
+```{r}
+
+plet(cat_plet, "Emission.Trajectory", tiles="Streets", wrap=FALSE, split=TRUE)
+
+```
+
+## Range Category
+
+```{r}
+
+plet(cat_plet, "Range.Category", tiles="Streets", wrap=FALSE, split=TRUE)
+
+```
+
+## Emission Category
+
+```{r}
+
+plet(cat_plet, "Emission.Category", tiles="Streets", wrap=FALSE, split=TRUE)
+
+```
+

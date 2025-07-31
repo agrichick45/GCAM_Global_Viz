@@ -1,0 +1,146 @@
+---
+title: "Static Plots"
+output: html_document
+date: "2025-07-31"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load the Files
+
+```{r}
+#Load the required packages
+library(tidyverse)
+library(terra)
+library(tidyterra)
+
+#Load the map vector file 
+map<-vect('reg_basin_boundaries_moirai_landcells_3p1_0p5arcmin.shp')
+
+#Dissolve maps into a regional file
+regions <- map %>% 
+  group_by(reg_nm) %>% 
+  summarise()
+
+#Load the Categories file
+categories<-read.csv("categories.csv")
+
+```
+
+```{r}
+cat_stat_file<-merge(map, categories, by="key") 
+
+
+my_sf_object <- sf::st_as_sf(cat_stat_file)
+layer_sf_object <-sf::st_as_sf(regions)
+
+my_sf_object <- sf::st_cast(my_sf_object, "MULTIPOLYGON")
+layer_sf_object  <- sf::st_cast(layer_sf_object , "MULTIPOLYGON")
+
+```
+
+## Total Land Use Change 
+
+```{r}
+TLUC_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=Land.Use.Percent.Category))  +
+     #geom_sf_text(aes(label=per_emissions), size=3) +
+     #scale_fill_gradient(low="white",high="darkgreen") + 
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+
+TLUC_plot.plt
+
+```
+
+## Land Use Category
+
+```{r}
+LUC_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=Land.Use.Category))  +
+     #geom_sf_text(aes(label=per_emissions), size=3) +
+     #scale_fill_gradient(low="white",high="darkgreen") + 
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+LUC_plot.plt
+
+```
+
+## Land Use Change Type
+
+```{r}
+LUC_Type_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=Land.Use.Change.Type))  +
+     #geom_sf_text(aes(label=per_emissions), size=3) +
+     #scale_fill_gradient(low="white",high="darkgreen") + 
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+
+```
+
+## Emission Types
+
+```{r}
+Emiss_Type_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=Emission.Type))  +
+     #geom_sf_text(aes(label=per_emissions), size=3) +
+     #scale_fill_gradient(low="white",high="darkgreen") + 
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+Emiss_Type_plot.plt
+```
+
+## Emission Trajectory 
+
+```{r}
+Emiss_Traj_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=Emission.Trajectory))  +
+     #geom_sf_text(aes(label=per_emissions), size=3) +
+     #scale_fill_gradient(low="white",high="darkgreen") + 
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+Emiss_Traj_plot.plt
+```
+
+## Range Category
+
+```{r}
+cols <- c("Less than 1 Mt" = "#CAF0F8", "1 Mt - Less than 12 Mt" = "#90E0EF", "12 Mt - Less than 25 Mt" = "#00B4D8", "25 Mt - Less than 50 Mt" =  "#0077B6", "Greater than 50 Mt" = "#03045E")
+
+Range_Cat_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=Range.Category)) +
+     #geom_sf_text(aes(label=per_emissions), size=3) +
+     scale_fill_manual("Model Emission Range (Mt)", values=cols) +
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+Range_Cat_plot.plt
+```
+
+
+## Regional Emissions
+
+```{r}
+region_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=Regional.Emissions))  +
+     #geom_sf_text(aes(label=per_emissions), size=3) +
+     scale_fill_gradient(low="white",high="darkgreen") + 
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+region_plot.plt
+
+```
+
+## Emission Category
+
+```{r}
+Emission_Cat_plot.plt<-ggplot(my_sf_object )+
+     geom_sf(aes(fill=Emission.Category)) +
+     #geom_sf_text(aes(label=per_emissions), size=3) +
+     #scale_fill_gradient(low="white",high="darkgreen") + 
+     geom_sf(data=layer_sf_object, fill="NA", color = "red")
+
+
+Emission_Cat_plot.plt
+```

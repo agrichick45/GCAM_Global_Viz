@@ -332,6 +332,7 @@ futRefCumEmissions.plt<-ggplot() +
 ```
 
 ### Land Use Net Emissions in the FAO Model
+
 ```{r}
 #Create a model of all different land use types in the world
 world_LU_FAO_cum_emiss<- wide_sum_cat_emiss %>%
@@ -426,7 +427,7 @@ FW_futRegNetLow.plt<- futRegNetEmissionsLOW.plt + facet_wrap(~Reg8)
 ## Cumulative Regional Sums
 
 ```{r}
-#This code calculates the cumulative regional emissions of each regeion
+#This code calculates the cumulative regional emissions of each region
 
 #Calculate the cumulative regional emissions
 futRegCumEmissions.plt<-ggplot() +
@@ -546,8 +547,7 @@ region_plot.plt<-ggplot(my_sf_object )+
      scale_fill_gradient(low="white",high="darkgreen") + 
      geom_sf(data=layer_sf_object, fill="NA", color = "red")
 
-fig <- ggplotly(region_plot.plt) %>%
-  layout(title = "Total Regional Emissions and Percentage from Each Basin")
+fig <- ggplotly(region_plot.plt) 
 fig
 
 
@@ -790,6 +790,7 @@ BRA_FW_futReg_region_Net.plt<- BRA_futReg_Region_NetEmissions.plt + facet_wrap(~
 ```
 
 ## China (CHN)
+
 ```{r}
 
 #Create a figure for the Chinese emissions
@@ -814,6 +815,7 @@ CHN_FW_futReg_region_Net.plt<- CHN_futReg_Region_NetEmissions.plt + facet_wrap(~
 ```
 
 ## United States (USA)
+
 ```{r}
 #Create an overall regional emission map with the USA
 USA_futReg_Region_NetEmissions.plt<-
@@ -979,7 +981,7 @@ FW_fut_Basin_Reg_region_Net.plt<- futReg_Region_Basin_NetEmissions.plt + facet_w
 
 futReg_Region_NetEmissions.plt<-
   ggplot(data=dplyr::filter(Basin_Emission,
-                                         Reg8 == "AFR" & year >2019 & EmissionType=="Complex")) +
+                                         Reg8 == "XLM" & year >2019 & EmissionType=="Complex")) +
   geom_line(mapping=aes(x=year, y=REF, color=Model), lwd=2) +
       #Add the custom color manual and labels
       scale_color_manual(values=c(ModelColors, name = "Emissions"), 
@@ -1206,7 +1208,7 @@ merged_range<-merge(Basin_key, max_range, by.x=c("GLU_Name", "reg_nm"), by.y=c("
 #merge the map with the range
 map_range<-merge(map, merged_range, by.x=c("key"), by.y=c("key"))
 
-map_range$category <- factor(map_range$category, levels = c("Less than 1 Mt", "1 Mt - Less than 12 Mt", "12 Mt - Less than 25 Mt", "25 Mt - Less than 50 Mt", "Greater than 50 Mt"))
+map_range$category <- factor(map_range$category, levels = c("Less than 1 Mt", "1 Mt - Less than 12 Mt", "12 Mt - Less than 25 Mt", "25 librMt - Less than 50 Mt", "Greater than 50 Mt"))
 
 cols <- c("Less than 1 Mt" = "#CAF0F8", "1 Mt - Less than 12 Mt" = "#90E0EF", "12 Mt - Less than 25 Mt" = "#00B4D8", "25 Mt - Less than 50 Mt" =  "#0077B6", "Greater than 50 Mt" = "#03045E")
 
